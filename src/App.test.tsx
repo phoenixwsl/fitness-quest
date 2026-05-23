@@ -21,6 +21,13 @@ describe('App shell', () => {
     expect(await screen.findByText(/即将推出/)).toBeInTheDocument()
   })
 
+  it('点击复盘 Tab 显示复盘表单', async () => {
+    render(<App />)
+    await screen.findByText('今日 · 力量 A')
+    fireEvent.click(screen.getByRole('button', { name: '复盘' }))
+    expect(await screen.findByText('今晚复盘')).toBeInTheDocument()
+  })
+
   it('底部导航有今日 / 复盘 / 进展三个 Tab', async () => {
     render(<App />)
     await screen.findByText('今日 · 力量 A')
