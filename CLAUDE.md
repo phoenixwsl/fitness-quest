@@ -173,12 +173,11 @@ App 必须在**完全无网络**时正常使用——这是产品的基本要求
 
 ## 开发命令
 
-项目尚未脚手架。初始化后预期为标准 Vite 流程:
-
 - `npm install` — 安装依赖
-- `npm run dev` — 本地开发
-- `npm run build` — 生产构建
-- `npm run test` — 单元测试(动态计划引擎规则必须有测试覆盖)
-- `npm run lint` — 代码检查
-
-> 脚手架建立后,请把本节更新为项目的实际命令。
+- `npm run dev` — 本地开发(Vite)
+- `npm run build` — 类型检查 + 生产构建(`tsc -b && vite build`)
+- `npm run test` — 单元测试(`vitest run`,一次性;动态计划引擎规则必须有测试覆盖)
+- `npm run test:watch` — 监听模式
+- `npm run coverage` — 覆盖率(`vitest run --coverage`)
+- `npm run lint` — 代码检查(`eslint .`)
+- `npm run preview` — 预览生产构建(用于离线 / Service Worker 验证)
