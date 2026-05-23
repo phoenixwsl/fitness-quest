@@ -1,10 +1,31 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { IDBFactory } from 'fake-indexeddb'
+import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
-describe('App', () => {
-  it('显示项目名称', () => {
+beforeEach(() => {
+  globalThis.indexedDB = new IDBFactory()
+})
+
+describe('App shell', () => {
+  it('默认显示今日页', async () => {
     render(<App />)
-    expect(screen.getByText('健身大闯关')).toBeInTheDocument()
+    // 新库:锚点 = 今天 → dayIndex 0 → 力量 A
+    expect(await screen.findByText('今日 · 力量 A')).toBeInTheDocument()
+  })
+
+  it('点击进展 Tab 显示占位「即将推出」', async () => {
+    render(<App />)
+    await screen.findByText('今日 · 力量 A')
+    fireEvent.click(screen.getByRole('button', { name: '进展' }))
+    expect(await screen.findByText(/即将推出/)).toBeInTheDocument()
+  })
+
+  it('底部导航有今日 / 复盘 / 进展三个 Tab', async () => {
+    render(<App />)
+    await screen.findByText('今日 · 力量 A')
+    expect(screen.getByRole('button', { name: '今日' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '复盘' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '进展' })).toBeInTheDocument()
   })
 })
