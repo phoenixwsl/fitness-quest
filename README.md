@@ -23,6 +23,7 @@ React + TypeScript + Vite + Tailwind CSS;PWA(Service Worker,离线可用);Indexe
 - `设计文档.md` — 完整产品 / 训练 / 安全设计
 - `CLAUDE.md` — 给 Claude Code 的项目上下文与编码准则
 
+
 ## 状态
 
 v0 开发中。脚手架(Vite + Tailwind + PWA + Vitest + GitHub Actions CI)已就绪。
