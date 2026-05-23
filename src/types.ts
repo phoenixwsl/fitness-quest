@@ -15,6 +15,7 @@ export interface DayPlan {
   morningTitle: string // 如 "早上 · 力量 A · 约 35 分钟"
   warmup: string[] // 可空数组
   main: ExerciseItem[] // 早上主训练动作(休息日为空)
+  safetyNote: string // 训练日安全提示(如组间休息 + 锐痛即停);非训练日可为空
   eveningMobility: string[] // 晚间体态放松——每天非空(永不归零)
   minimumVersion: string // 最低版本兜底文案
   diet: string
