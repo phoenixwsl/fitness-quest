@@ -3,7 +3,10 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import ProgressPage from './ProgressPage'
 import type { Photo, PoseTag } from '../types'
 
-vi.mock('../db', () => ({ getAllPhotos: vi.fn() }))
+vi.mock('../db', () => ({
+  getAllPhotos: vi.fn(),
+  getSettings: vi.fn().mockResolvedValue({ anchorDate: '2026-05-20' }),
+}))
 import { getAllPhotos } from '../db'
 
 function photo(id: string, takenAt: number, pose: PoseTag, date: string): Photo {

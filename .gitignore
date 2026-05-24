@@ -29,3 +29,6 @@ dev-dist
 
 # Vite/Vitest 启动时在根目录生成的临时配置(编译产物,别提交)
 *.timestamp-*.mjs
+
+# 本地个人设置(权限等),不入库
+.claude/settings.local.json

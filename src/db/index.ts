@@ -2,12 +2,14 @@ import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
 import type { CheckIn, DailyPlan, Metric, Photo, Scenario } from '../types'
 import { todayKey } from '../lib/date'
 
-interface AppSettings {
+export interface AppSettings {
   anchorDate: string
   healthNoticeAck?: boolean
+  lastBackupAt?: number // 上次导出备份的时间戳
+  reminderTime?: string // 复盘提醒时间 'HH:MM'
 }
 
-interface ExerciseCount {
+export interface ExerciseCount {
   id: string
   count: number
 }
@@ -54,6 +56,19 @@ export async function getAnchorDate(): Promise<string> {
   const anchorDate = todayKey()
   await db.put('settings', { anchorDate }, SETTINGS_KEY)
   return anchorDate
+}
+
+// 读取整个 settings 记录(缺失则给默认,不持久化)。
+export async function getSettings(): Promise<AppSettings> {
+  const existing = await (await getDB()).get('settings', SETTINGS_KEY)
+  return existing ?? { anchorDate: todayKey() }
+}
+
+// 合并更新 settings,保留其它字段。
+export async function updateSettings(patch: Partial<AppSettings>): Promise<void> {
+  const db = await getDB()
+  const existing = (await db.get('settings', SETTINGS_KEY)) ?? { anchorDate: todayKey() }
+  await db.put('settings', { ...existing, ...patch }, SETTINGS_KEY)
 }
 
 // 首启健康须知确认标记。
@@ -151,5 +166,54 @@ export async function incrementCounts(ids: string[]): Promise<void> {
     const current = (await tx.store.get(id))?.count ?? 0
     await tx.store.put({ id, count: current + 1 })
   }
+  await tx.done
+}
+
+// ── 备份导出 / 导入 ──────────────────────────────────────────
+// 全库原始转储(照片仍为 Blob)。备份序列化在 lib/backup.ts 里做 base64 编解码。
+export interface RawDump {
+  settings: AppSettings | undefined
+  checkIns: CheckIn[]
+  photos: Photo[]
+  metrics: Metric[]
+  scenarios: Scenario[]
+  dailyPlans: DailyPlan[]
+  exerciseCounts: ExerciseCount[]
+}
+
+export async function exportAllStores(): Promise<RawDump> {
+  const db = await getDB()
+  return {
+    settings: await db.get('settings', SETTINGS_KEY),
+    checkIns: await db.getAll('checkIns'),
+    photos: await db.getAll('photos'),
+    metrics: await db.getAll('metrics'),
+    scenarios: await db.getAll('scenarios'),
+    dailyPlans: await db.getAll('dailyPlans'),
+    exerciseCounts: await db.getAll('exerciseCounts'),
+  }
+}
+
+// 整库覆盖:先清空所有 store,再写入备份内容(调用方须先取得用户确认)。
+export async function importAllStores(dump: RawDump): Promise<void> {
+  const db = await getDB()
+  const stores = [
+    'settings',
+    'checkIns',
+    'photos',
+    'metrics',
+    'scenarios',
+    'dailyPlans',
+    'exerciseCounts',
+  ] as const
+  const tx = db.transaction(stores, 'readwrite')
+  for (const s of stores) await tx.objectStore(s).clear()
+  if (dump.settings) await tx.objectStore('settings').put(dump.settings, SETTINGS_KEY)
+  for (const c of dump.checkIns) await tx.objectStore('checkIns').put(c)
+  for (const p of dump.photos) await tx.objectStore('photos').put(p)
+  for (const m of dump.metrics) await tx.objectStore('metrics').put(m)
+  for (const sc of dump.scenarios) await tx.objectStore('scenarios').put(sc)
+  for (const dp of dump.dailyPlans) await tx.objectStore('dailyPlans').put(dp)
+  for (const ec of dump.exerciseCounts) await tx.objectStore('exerciseCounts').put(ec)
   await tx.done
 }

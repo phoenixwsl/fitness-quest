@@ -56,4 +56,11 @@ describe('App shell(已确认)', () => {
     expect(screen.getByRole('button', { name: '复盘' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '进展' })).toBeInTheDocument()
   })
+
+  it('点击设置齿轮打开设置页(含数据备份)', async () => {
+    await renderApp({ acked: true })
+    await screen.findByText('选择场景')
+    fireEvent.click(screen.getByRole('button', { name: '设置' }))
+    expect(await screen.findByText('数据备份')).toBeInTheDocument()
+  })
 })

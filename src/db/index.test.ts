@@ -158,4 +158,33 @@ describe('storage layer', () => {
     await db.putPhoto({ id: 'p3', blob: new Blob(['c']), takenAt: 200, pose: 'back', checkInDate: '2026-05-23' })
     expect((await db.getAllPhotos()).map((p) => p.id)).toEqual(['p2', 'p3', 'p1'])
   })
+
+  it('getSettings 默认含 anchorDate;updateSettings 合并保留其它字段', async () => {
+    const db = await import('./index')
+    const anchor = await db.getAnchorDate()
+    await db.updateSettings({ lastBackupAt: 123 })
+    const s = await db.getSettings()
+    expect(s.anchorDate).toBe(anchor)
+    expect(s.lastBackupAt).toBe(123)
+    await db.updateSettings({ reminderTime: '21:30' })
+    const s2 = await db.getSettings()
+    expect(s2.lastBackupAt).toBe(123) // 未被覆盖
+    expect(s2.reminderTime).toBe('21:30')
+  })
+
+  it('exportAllStores / importAllStores 往返,且 import 先清后写', async () => {
+    const db = await import('./index')
+    await db.putCheckIn(makeCheckIn('2026-05-24'))
+    await db.putMetric({ date: '2026-05-24', waist: 90 })
+    const dump = await db.exportAllStores()
+    expect(dump.checkIns).toHaveLength(1)
+    expect(dump.metrics).toHaveLength(1)
+
+    // 模拟换设备:往现有库塞脏数据,再 import 备份 → 脏数据被清掉
+    await db.putCheckIn(makeCheckIn('2099-01-01'))
+    await db.importAllStores(dump)
+    expect(await db.getCheckIn('2099-01-01')).toBeUndefined()
+    expect(await db.getCheckIn('2026-05-24')).toBeDefined()
+    expect(await db.getAllMetrics()).toHaveLength(1)
+  })
 })
