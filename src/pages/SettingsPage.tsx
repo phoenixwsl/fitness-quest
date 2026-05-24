@@ -84,7 +84,8 @@ export default function SettingsPage({ onClose }: { onClose: () => void }) {
       <section className="rounded-2xl bg-white p-4 shadow-sm">
         <h2 className="mb-1 text-base font-semibold text-slate-800">数据备份</h2>
         <p className="mb-3 text-xs text-slate-500">
-          数据只存在这台设备上。**建议定期导出备份**,换手机或清缓存前尤其要先导出。
+          数据只存在这台设备上。<strong className="text-slate-700">建议定期导出备份</strong>
+          ,换手机或清缓存前尤其要先导出。
         </p>
         <div className="flex gap-3">
           <button
