@@ -104,4 +104,18 @@ describe('storage layer', () => {
     const db = await import('./index')
     expect(await db.getScenario('2099-01-01')).toBeUndefined()
   })
+
+  it('健康须知:getHealthAck 默认 false,setHealthAck 后为 true', async () => {
+    const db = await import('./index')
+    expect(await db.getHealthAck()).toBe(false)
+    await db.setHealthAck(true)
+    expect(await db.getHealthAck()).toBe(true)
+  })
+
+  it('setHealthAck 不破坏锚点日期', async () => {
+    const db = await import('./index')
+    const anchor = await db.getAnchorDate()
+    await db.setHealthAck(true)
+    expect(await db.getAnchorDate()).toBe(anchor)
+  })
 })

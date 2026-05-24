@@ -4,6 +4,7 @@ import { todayKey } from '../lib/date'
 
 interface AppSettings {
   anchorDate: string
+  healthNoticeAck?: boolean
 }
 
 interface FitnessDB extends DBSchema {
@@ -44,6 +45,22 @@ export async function getAnchorDate(): Promise<string> {
   const anchorDate = todayKey()
   await db.put('settings', { anchorDate }, SETTINGS_KEY)
   return anchorDate
+}
+
+// 首启健康须知确认标记。
+export async function getHealthAck(): Promise<boolean> {
+  const existing = await (await getDB()).get('settings', SETTINGS_KEY)
+  return existing?.healthNoticeAck ?? false
+}
+
+export async function setHealthAck(acked: boolean): Promise<void> {
+  const db = await getDB()
+  const existing = await db.get('settings', SETTINGS_KEY)
+  await db.put(
+    'settings',
+    { anchorDate: existing?.anchorDate ?? todayKey(), healthNoticeAck: acked },
+    SETTINGS_KEY,
+  )
 }
 
 export async function getCheckIn(date: string): Promise<CheckIn | undefined> {
