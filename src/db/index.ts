@@ -92,6 +92,12 @@ export async function putPhoto(photo: Photo): Promise<void> {
   await (await getDB()).put('photos', photo)
 }
 
+// 照片时间线:按拍摄时间倒序(最新在前)。
+export async function getAllPhotos(): Promise<Photo[]> {
+  const all = await (await getDB()).getAll('photos')
+  return all.sort((a, b) => b.takenAt - a.takenAt)
+}
+
 export async function getMetric(date: string): Promise<Metric | undefined> {
   return (await getDB()).get('metrics', date)
 }

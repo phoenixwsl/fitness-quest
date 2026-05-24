@@ -150,4 +150,12 @@ describe('storage layer', () => {
     await db.putDailyPlan({ date: '2026-05-25', type: 'mobility', reason: 'b' })
     expect(await db.getAllDailyPlans()).toHaveLength(2)
   })
+
+  it('getAllPhotos 按拍摄时间倒序返回全部', async () => {
+    const db = await import('./index')
+    await db.putPhoto({ id: 'p1', blob: new Blob(['a']), takenAt: 100, pose: 'front', checkInDate: '2026-05-22' })
+    await db.putPhoto({ id: 'p2', blob: new Blob(['b']), takenAt: 300, pose: 'side', checkInDate: '2026-05-24' })
+    await db.putPhoto({ id: 'p3', blob: new Blob(['c']), takenAt: 200, pose: 'back', checkInDate: '2026-05-23' })
+    expect((await db.getAllPhotos()).map((p) => p.id)).toEqual(['p2', 'p3', 'p1'])
+  })
 })

@@ -3,7 +3,7 @@ import BottomNav, { type Tab } from './components/BottomNav'
 import HealthNotice from './components/HealthNotice'
 import TodayPage from './pages/TodayPage'
 import CheckInPage from './pages/CheckInPage'
-import ProgressPlaceholder from './pages/ProgressPlaceholder'
+import ProgressPage from './pages/ProgressPage'
 import { getHealthAck, setHealthAck } from './db'
 
 export default function App() {
@@ -40,7 +40,7 @@ export default function App() {
       <main className="mx-auto max-w-md">
         {tab === 'today' && <TodayPage />}
         {tab === 'checkin' && <CheckInPage />}
-        {tab === 'progress' && <ProgressPlaceholder />}
+        {tab === 'progress' && <ProgressPage />}
       </main>
       <BottomNav active={tab} onChange={setTab} />
     </div>

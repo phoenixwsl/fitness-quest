@@ -35,11 +35,11 @@ describe('App shell(已确认)', () => {
     expect(await screen.findByText('选择场景')).toBeInTheDocument()
   })
 
-  it('点击进展 Tab 显示占位「即将推出」', async () => {
+  it('点击进展 Tab 显示照片时间线(空态)', async () => {
     await renderApp({ acked: true })
     await screen.findByText('选择场景')
     fireEvent.click(screen.getByRole('button', { name: '进展' }))
-    expect(await screen.findByText(/即将推出/)).toBeInTheDocument()
+    expect(await screen.findByText(/还没有照片/)).toBeInTheDocument()
   })
 
   it('点击复盘 Tab 显示复盘表单', async () => {
