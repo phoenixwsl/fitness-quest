@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // GitHub Pages 项目站点在 /fitness-quest/ 子路径;本地开发 / 预览仍用根路径。
+  base: process.env.GITHUB_ACTIONS ? '/fitness-quest/' : '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -18,7 +20,9 @@ export default defineConfig({
         theme_color: '#0d9488',
         background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
+        // 相对路径,在根路径与 /fitness-quest/ 子路径下都正确解析。
+        start_url: '.',
+        scope: '.',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
