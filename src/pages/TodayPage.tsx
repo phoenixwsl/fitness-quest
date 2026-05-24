@@ -5,6 +5,7 @@ import { todayKey } from '../lib/date'
 import { DEFAULT_REMINDER_TIME, isCheckinOverdue } from '../lib/reminder'
 import { BASE_WARMUP_LIST, TIME_OF_DAY, getPlanForType } from '../data/planTemplate'
 import { getExercise } from '../data/exerciseLibrary'
+import { getExerciseDiagram } from '../data/exerciseDiagrams'
 import ScenarioPicker from '../components/ScenarioPicker'
 import ExerciseRow from '../components/ExerciseRow'
 
@@ -162,6 +163,7 @@ export default function TodayPage() {
               prescription={e.prescription}
               note={e.note}
               count={counts[e.exerciseId] ?? 0}
+              diagramUrl={getExerciseDiagram(e.exerciseId)}
             />
           ))}
         </ol>

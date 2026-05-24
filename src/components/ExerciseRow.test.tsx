@@ -49,4 +49,19 @@ describe('ExerciseRow', () => {
     expect(screen.getByText('高脚杯深蹲')).toBeInTheDocument()
     expect(screen.getByText('3 × 10')).toBeInTheDocument()
   })
+
+  it('有示意图时展开显示图片', () => {
+    render(
+      <ul>
+        <ExerciseRow exercise={ex} name={ex.name} prescription="3 × 10" count={0} diagramUrl="/x.svg" />
+      </ul>,
+    )
+    expect(screen.getByAltText('高脚杯深蹲 示意图')).toBeInTheDocument()
+  })
+
+  it('无示意图时优雅降级(只有文字,无图片)', () => {
+    renderRow(0)
+    expect(screen.queryByAltText(/示意图/)).not.toBeInTheDocument()
+    expect(screen.getByText('下肢与核心')).toBeInTheDocument()
+  })
 })

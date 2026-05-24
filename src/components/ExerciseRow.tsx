@@ -31,12 +31,14 @@ export default function ExerciseRow({
   prescription,
   note,
   count,
+  diagramUrl,
 }: {
   exercise?: Exercise
   name: string
   prescription: string
   note?: string
   count: number
+  diagramUrl?: string
 }) {
   // 详细度衰减:新手期默认展开,熟练后默认折叠;用户可手动切换(本会话内)。
   const [expanded, setExpanded] = useState(!shouldCollapse(count))
@@ -57,6 +59,13 @@ export default function ExerciseRow({
       {note && <p className="mt-0.5 text-xs text-slate-500">{note}</p>}
       {expanded && exercise && (
         <div className="mt-2 flex flex-col gap-1.5 rounded-lg bg-slate-50 p-3">
+          {diagramUrl && (
+            <img
+              src={diagramUrl}
+              alt={`${name} 示意图`}
+              className="mb-1 w-full max-w-[220px] self-center rounded-lg bg-white"
+            />
+          )}
           <DetailText title="目标部位" text={exercise.target} />
           <DetailList title="怎么做" items={exercise.steps} />
           <DetailList title="要领" items={exercise.cues} />
