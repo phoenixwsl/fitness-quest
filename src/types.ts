@@ -7,9 +7,23 @@ export type TimeOfDay = 'morning' | 'afternoon' | 'evening'
 export type Equipment = 'equipped' | 'bodyweight'
 
 export interface ExerciseItem {
+  exerciseId: string // 关联动作库
   name: string
   prescription: string
   note?: string
+}
+
+// 动作库条目:详情 + AS 安全标注。v1 只用文字详解,不放示范图(imageUrl 留空)。
+export interface Exercise {
+  id: string
+  name: string
+  target: string // 目标部位
+  steps: string[] // 怎么做(分步)
+  cues: string[] // 要领
+  mistakes: string[] // 常见错误
+  asSafety: string // AS 安全提示
+  alternative: string // 替代动作
+  imageUrl?: string
 }
 
 // 按训练「类型」组织的计划(时间中性)。最终计划 = 类型 × 场景(时间段 + 器械)。
