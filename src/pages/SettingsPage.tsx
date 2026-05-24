@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { exportAllStores, getSettings, importAllStores, updateSettings } from '../db'
 import { deserializeBackup, serializeBackup, type BackupFile } from '../lib/backup'
+import { DEFAULT_REMINDER_TIME } from '../lib/reminder'
 
 function readFileAsText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -13,12 +14,21 @@ function readFileAsText(file: File): Promise<string> {
 
 export default function SettingsPage({ onClose }: { onClose: () => void }) {
   const [lastBackupAt, setLastBackupAt] = useState<number | undefined>(undefined)
+  const [reminderTime, setReminderTime] = useState(DEFAULT_REMINDER_TIME)
   const [status, setStatus] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    getSettings().then((s) => setLastBackupAt(s.lastBackupAt))
+    getSettings().then((s) => {
+      setLastBackupAt(s.lastBackupAt)
+      setReminderTime(s.reminderTime ?? DEFAULT_REMINDER_TIME)
+    })
   }, [])
+
+  async function handleReminderChange(value: string) {
+    setReminderTime(value)
+    await updateSettings({ reminderTime: value })
+  }
 
   async function handleExport() {
     const file = await serializeBackup(await exportAllStores())
@@ -102,6 +112,31 @@ export default function SettingsPage({ onClose }: { onClose: () => void }) {
         </div>
         <p className="mt-3 text-xs text-slate-400">{lastBackupText}</p>
         {status && <p className="mt-1 text-xs text-teal-700">{status}</p>}
+      </section>
+
+      <section className="rounded-2xl bg-white p-4 shadow-sm">
+        <h2 className="mb-1 text-base font-semibold text-slate-800">打卡提醒</h2>
+        <p className="mb-3 text-xs text-slate-500">
+          App 不自建推送。请把下面的时间一次性加到手机自带「提醒事项 / 闹钟」;打开 App 时若已过复盘时间还没打卡,首页也会提示你。
+        </p>
+        <div className="flex items-center gap-3">
+          <label htmlFor="reminder-time" className="text-sm text-slate-700">
+            复盘提醒时间
+          </label>
+          <input
+            id="reminder-time"
+            type="time"
+            value={reminderTime}
+            onChange={(e) => handleReminderChange(e.target.value)}
+            className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
+          />
+        </div>
+        <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs text-slate-600">
+          <p className="mb-1 font-medium text-slate-700">建议提醒时间表</p>
+          <p>· 训练提醒 20:00 —— 提示开始当晚训练</p>
+          <p>· 复盘打卡提醒 {reminderTime} —— 训练 + 体态放松之后</p>
+          <p className="mt-1 text-slate-400">喝水 / 三餐可绑定到既有生活习惯,不必单设。</p>
+        </div>
       </section>
 
       <p className="mt-auto pt-4 text-center text-xs text-slate-400">版本 v{__APP_VERSION__}</p>

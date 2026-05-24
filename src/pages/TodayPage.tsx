@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Equipment, PlanType, Scenario, TimeOfDay, TrainingTypePlan } from '../types'
-import { getAllCounts, getDailyPlan, getScenario, putScenario } from '../db'
+import { getAllCounts, getCheckIn, getDailyPlan, getScenario, getSettings, putScenario } from '../db'
 import { todayKey } from '../lib/date'
+import { DEFAULT_REMINDER_TIME, isCheckinOverdue } from '../lib/reminder'
 import { BASE_WARMUP_LIST, TIME_OF_DAY, getPlanForType } from '../data/planTemplate'
 import { getExercise } from '../data/exerciseLibrary'
 import ScenarioPicker from '../components/ScenarioPicker'
@@ -46,20 +47,28 @@ export default function TodayPage() {
   const [loaded, setLoaded] = useState(false)
   const [picking, setPicking] = useState(false)
   const [counts, setCounts] = useState<Record<string, number>>({})
+  const [overdue, setOverdue] = useState(false)
 
   useEffect(() => {
     let alive = true
-    Promise.all([getDailyPlan(today), getScenario(today), getAllCounts()]).then(
-      ([dp, sc, cnts]) => {
-        if (!alive) return
-        // 引擎生成的当日计划;无(首次 / 漏复盘)则兜底体态 / 活动度日。
-        setType(dp?.type ?? 'mobility')
-        setReason(dp?.reason ?? '暂无昨日复盘 → 今日默认体态 / 活动度日')
-        if (sc) setScenario(sc)
-        setCounts(cnts)
-        setLoaded(true)
-      },
-    )
+    Promise.all([
+      getDailyPlan(today),
+      getScenario(today),
+      getAllCounts(),
+      getSettings(),
+      getCheckIn(today),
+    ]).then(([dp, sc, cnts, settings, checkin]) => {
+      if (!alive) return
+      // 引擎生成的当日计划;无(首次 / 漏复盘)则兜底体态 / 活动度日。
+      setType(dp?.type ?? 'mobility')
+      setReason(dp?.reason ?? '暂无昨日复盘 → 今日默认体态 / 活动度日')
+      if (sc) setScenario(sc)
+      setCounts(cnts)
+      setOverdue(
+        isCheckinOverdue(settings.reminderTime ?? DEFAULT_REMINDER_TIME, new Date(), Boolean(checkin)),
+      )
+      setLoaded(true)
+    })
     return () => {
       alive = false
     }
@@ -78,6 +87,12 @@ export default function TodayPage() {
 
   const plan = getPlanForType(type)
 
+  const overdueBanner = overdue ? (
+    <p className="rounded-xl bg-teal-50 px-3 py-2 text-sm text-teal-800">
+      📝 今天还没打卡 · 晚上记得到「复盘」记一笔(从「最低版本」开始也算)。
+    </p>
+  ) : null
+
   // 休息日不需要选场景。
   if (type === 'rest') {
     return (
@@ -87,6 +102,7 @@ export default function TodayPage() {
           <h1 className="text-xl font-bold text-slate-900">今日 · 休息</h1>
           <p className="mt-1 text-xs text-slate-400">为什么是今天:{reason}</p>
         </header>
+        {overdueBanner}
         <Card title="休息">
           <p className="text-slate-600">今天休息,给身体恢复的时间。只做晚间体态放松 + 复盘即可。</p>
         </Card>
@@ -97,11 +113,14 @@ export default function TodayPage() {
 
   if (!scenario || picking) {
     return (
-      <ScenarioPicker
-        onConfirm={handleConfirm}
-        defaultTimeOfDay={scenario?.timeOfDay}
-        defaultEquipment={scenario?.equipment}
-      />
+      <div>
+        {overdueBanner && <div className="p-4 pb-0">{overdueBanner}</div>}
+        <ScenarioPicker
+          onConfirm={handleConfirm}
+          defaultTimeOfDay={scenario?.timeOfDay}
+          defaultEquipment={scenario?.equipment}
+        />
+      </div>
     )
   }
 
@@ -128,6 +147,8 @@ export default function TodayPage() {
           </button>
         </div>
       </header>
+
+      {overdueBanner}
 
       <Card title={`${tod.label} · ${plan.sessionTitle}`}>
         <p className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">{tod.tip}</p>

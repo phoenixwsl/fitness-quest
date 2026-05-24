@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { IDBFactory } from 'fake-indexeddb'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory()
@@ -28,6 +28,17 @@ describe('SettingsPage 数据备份', () => {
   it('显示应用版本号', async () => {
     await renderSettings()
     expect(screen.getByText(/版本 v\d+\.\d+\.\d+/)).toBeInTheDocument()
+  })
+
+  it('修改复盘提醒时间并持久化', async () => {
+    await renderSettings()
+    const input = screen.getByLabelText('复盘提醒时间') as HTMLInputElement
+    expect(input.value).toBe('21:30') // 默认
+    fireEvent.change(input, { target: { value: '22:00' } })
+    await screen.findByText(/复盘打卡提醒 22:00/)
+    await waitFor(async () => {
+      expect((await (await db()).getSettings()).reminderTime).toBe('22:00')
+    })
   })
 
   it('点击导出后记录 lastBackupAt', async () => {

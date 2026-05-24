@@ -9,14 +9,26 @@ vi.mock('../db', () => ({
   getScenario: vi.fn(),
   putScenario: vi.fn().mockResolvedValue(undefined),
   getAllCounts: vi.fn().mockResolvedValue({}),
+  getSettings: vi.fn().mockResolvedValue({ anchorDate: '2026-05-20', reminderTime: '21:30' }),
+  getCheckIn: vi.fn(),
 }))
-import { getDailyPlan, getScenario, putScenario, getAllCounts } from '../db'
+import {
+  getDailyPlan,
+  getScenario,
+  putScenario,
+  getAllCounts,
+  getSettings,
+  getCheckIn,
+} from '../db'
 
 beforeEach(() => {
   ;(getDailyPlan as Mock).mockReset()
   ;(getScenario as Mock).mockReset()
   ;(putScenario as Mock).mockReset().mockResolvedValue(undefined)
   ;(getAllCounts as Mock).mockReset().mockResolvedValue({})
+  ;(getSettings as Mock).mockReset().mockResolvedValue({ anchorDate: '2026-05-20', reminderTime: '21:30' })
+  // 默认「今天已打卡」→ 不出现补打卡横幅,保证其它用例确定性。
+  ;(getCheckIn as Mock).mockReset().mockResolvedValue({ date: todayKey() })
 })
 
 // type=null 模拟「无当日计划」(引擎未生成 / 漏复盘)。
@@ -107,5 +119,22 @@ describe('TodayPage 场景流程', () => {
     // 兜底 mobility → 渲染活动度动作 + 兜底理由
     expect(await screen.findByText('温和猫牛')).toBeInTheDocument()
     expect(screen.getByText(/暂无昨日复盘/)).toBeInTheDocument()
+  })
+
+  it('已过提醒时间且今天没打卡 → 显示补打卡横幅', async () => {
+    ;(getCheckIn as Mock).mockResolvedValue(undefined) // 今天没打卡
+    ;(getSettings as Mock).mockResolvedValue({ anchorDate: '2026-05-20', reminderTime: '00:00' }) // 任何时刻都已过
+    setup('strengthA', { date: todayKey(), timeOfDay: 'afternoon', equipment: 'equipped' })
+    render(<TodayPage />)
+    expect(await screen.findByText(/今天还没打卡/)).toBeInTheDocument()
+  })
+
+  it('今天已打卡 → 不显示补打卡横幅', async () => {
+    ;(getCheckIn as Mock).mockResolvedValue({ date: todayKey() })
+    ;(getSettings as Mock).mockResolvedValue({ anchorDate: '2026-05-20', reminderTime: '00:00' })
+    setup('strengthA', { date: todayKey(), timeOfDay: 'afternoon', equipment: 'equipped' })
+    render(<TodayPage />)
+    await screen.findByText('高脚杯深蹲')
+    expect(screen.queryByText(/今天还没打卡/)).not.toBeInTheDocument()
   })
 })
