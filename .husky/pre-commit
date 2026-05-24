@@ -1,0 +1,11 @@
+# 提交前本地门禁:测试 + 构建必须通过(对齐 CLAUDE.md 与 CI)。
+# 仅文档改动(无 .ts/.tsx/.js/.jsx/.css/.html/.json)时跳过,加快迭代;
+# 紧急绕过用 git commit --no-verify(不推荐)。
+CHANGED=$(git diff --cached --name-only --diff-filter=ACMR)
+HAS_CODE=$(echo "$CHANGED" | grep -E '\.(ts|tsx|js|jsx|css|html|json)$' || true)
+if [ -z "$HAS_CODE" ] && [ -n "$CHANGED" ]; then
+  echo "[pre-commit] 仅文档改动,跳过 test + build"
+  exit 0
+fi
+
+npm run test && npm run build

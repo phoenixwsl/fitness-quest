@@ -26,3 +26,6 @@ dist-ssr
 # Test & PWA output
 coverage
 dev-dist
+
+# Vite/Vitest 启动时在根目录生成的临时配置(编译产物,别提交)
+*.timestamp-*.mjs
