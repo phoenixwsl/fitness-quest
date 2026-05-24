@@ -12,6 +12,8 @@ import type {
 import {
   getAnchorDate,
   getCheckIn,
+  getScenario,
+  incrementCounts,
   putCheckIn,
   putMetric,
   putPhoto,
@@ -178,6 +180,15 @@ export default function CheckInPage() {
       createdAt: Date.now(),
     }
     await putCheckIn(checkIn)
+
+    // 整体完成即全部 +1:完成 / 部分完成时,给今日计划(类型 × 场景器械)里每个动作累加完成次数。
+    if (trainingStatus === 'done' || trainingStatus === 'partial') {
+      const anchor = await getAnchorDate()
+      const todayType = getTypeForDayIndex(planDayIndex(anchor, today))
+      const equipment = (await getScenario(today))?.equipment ?? 'bodyweight'
+      const ids = getPlanForType(todayType).main[equipment].map((e) => e.exerciseId)
+      await incrementCounts(ids)
+    }
 
     const waistNum = parseFloat(waist)
     const weightNum = parseFloat(weight)

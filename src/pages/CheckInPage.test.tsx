@@ -90,6 +90,22 @@ describe('CheckInPage', () => {
     expect(await (await db()).getPhoto(got!.photoIds[0])).toBeDefined()
   })
 
+  it('完成打卡后今日动作完成次数 +1', async () => {
+    await renderPage()
+    submit() // 默认训练状态 = 完成
+    await screen.findByText('明日计划')
+    // 今日 idx0 = 力量A,无场景 → 徒手版:bw-squat 等 +1
+    expect(await (await db()).getCount('bw-squat')).toBe(1)
+  })
+
+  it('未做时不累加完成次数', async () => {
+    await renderPage()
+    fireEvent.click(screen.getByRole('radio', { name: '未做' }))
+    submit()
+    await screen.findByText('明日计划')
+    expect(await (await db()).getCount('bw-squat')).toBe(0)
+  })
+
   it('今日已打卡时显示已完成提示', async () => {
     const d = await db()
     await d.putCheckIn({

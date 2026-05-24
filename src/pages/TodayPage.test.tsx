@@ -8,8 +8,9 @@ vi.mock('../db', () => ({
   getAnchorDate: vi.fn(),
   getScenario: vi.fn(),
   putScenario: vi.fn().mockResolvedValue(undefined),
+  getAllCounts: vi.fn().mockResolvedValue({}),
 }))
-import { getAnchorDate, getScenario, putScenario } from '../db'
+import { getAnchorDate, getScenario, putScenario, getAllCounts } from '../db'
 
 // 锚点 = 今天 - idx 天 → planDayIndex 落在 idx;idx0=力量A,idx6=休息。
 function anchorForIndex(idx: number): string {
@@ -73,6 +74,13 @@ describe('TodayPage 场景流程', () => {
     expect(screen.queryByText('选择场景')).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: '重选场景' }))
     expect(await screen.findByText('选择场景')).toBeInTheDocument()
+  })
+
+  it('新手期动作详情默认展开(显示要领)', async () => {
+    ;(getAllCounts as Mock).mockResolvedValue({})
+    setup(0, { date: todayKey(), timeOfDay: 'afternoon', equipment: 'equipped' })
+    render(<TodayPage />)
+    expect(await screen.findByText(/重心落在全脚掌/)).toBeInTheDocument()
   })
 
   it('渲染晚间体态 / 饮食喝水 / 最低版本', async () => {

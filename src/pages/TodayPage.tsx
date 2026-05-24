@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Equipment, PlanType, Scenario, TimeOfDay, TrainingTypePlan } from '../types'
-import { getAnchorDate, getScenario, putScenario } from '../db'
+import { getAllCounts, getAnchorDate, getScenario, putScenario } from '../db'
 import { planDayIndex, todayKey } from '../lib/date'
 import {
   BASE_WARMUP_LIST,
@@ -8,7 +8,9 @@ import {
   getPlanForType,
   getTypeForDayIndex,
 } from '../data/planTemplate'
+import { getExercise } from '../data/exerciseLibrary'
 import ScenarioPicker from '../components/ScenarioPicker'
+import ExerciseRow from '../components/ExerciseRow'
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -47,15 +49,19 @@ export default function TodayPage() {
   const [scenario, setScenario] = useState<Scenario | null>(null)
   const [loaded, setLoaded] = useState(false)
   const [picking, setPicking] = useState(false)
+  const [counts, setCounts] = useState<Record<string, number>>({})
 
   useEffect(() => {
     let alive = true
-    Promise.all([getAnchorDate(), getScenario(today)]).then(([anchor, sc]) => {
-      if (!alive) return
-      setType(getTypeForDayIndex(planDayIndex(anchor, today)))
-      if (sc) setScenario(sc)
-      setLoaded(true)
-    })
+    Promise.all([getAnchorDate(), getScenario(today), getAllCounts()]).then(
+      ([anchor, sc, cnts]) => {
+        if (!alive) return
+        setType(getTypeForDayIndex(planDayIndex(anchor, today)))
+        if (sc) setScenario(sc)
+        setCounts(cnts)
+        setLoaded(true)
+      },
+    )
     return () => {
       alive = false
     }
@@ -126,15 +132,16 @@ export default function TodayPage() {
       <Card title={`${tod.label} · ${plan.sessionTitle}`}>
         <p className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">{tod.tip}</p>
         <p className="mb-3 text-sm text-slate-500">热身:{warmup.join(' · ')}</p>
-        <ol className="flex flex-col gap-2">
+        <ol className="flex flex-col">
           {mainList.map((e) => (
-            <li key={e.name} className="border-b border-slate-100 pb-2 last:border-0">
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="font-medium text-slate-800">{e.name}</span>
-                <span className="shrink-0 text-sm text-teal-700">{e.prescription}</span>
-              </div>
-              {e.note && <p className="mt-0.5 text-xs text-slate-500">{e.note}</p>}
-            </li>
+            <ExerciseRow
+              key={e.exerciseId}
+              exercise={getExercise(e.exerciseId)}
+              name={e.name}
+              prescription={e.prescription}
+              note={e.note}
+              count={counts[e.exerciseId] ?? 0}
+            />
           ))}
         </ol>
         {plan.safetyNote && (
