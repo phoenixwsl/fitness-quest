@@ -7,16 +7,22 @@ interface AppSettings {
   healthNoticeAck?: boolean
 }
 
+interface ExerciseCount {
+  id: string
+  count: number
+}
+
 interface FitnessDB extends DBSchema {
   settings: { key: string; value: AppSettings }
   checkIns: { key: string; value: CheckIn }
   photos: { key: string; value: Photo }
   metrics: { key: string; value: Metric }
   scenarios: { key: string; value: Scenario }
+  exerciseCounts: { key: string; value: ExerciseCount }
 }
 
 const DB_NAME = 'fitness-quest'
-const DB_VERSION = 2
+const DB_VERSION = 3
 const SETTINGS_KEY = 'app'
 
 let dbPromise: Promise<IDBPDatabase<FitnessDB>> | undefined
@@ -31,6 +37,7 @@ function getDB(): Promise<IDBPDatabase<FitnessDB>> {
         if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'id' })
         if (!db.objectStoreNames.contains('metrics')) db.createObjectStore('metrics', { keyPath: 'date' })
         if (!db.objectStoreNames.contains('scenarios')) db.createObjectStore('scenarios', { keyPath: 'date' })
+        if (!db.objectStoreNames.contains('exerciseCounts')) db.createObjectStore('exerciseCounts', { keyPath: 'id' })
       },
     })
   }
@@ -102,4 +109,26 @@ export async function getScenario(date: string): Promise<Scenario | undefined> {
 
 export async function putScenario(scenario: Scenario): Promise<void> {
   await (await getDB()).put('scenarios', scenario)
+}
+
+// 动作累计完成次数(驱动详细度衰减)。
+export async function getCount(id: string): Promise<number> {
+  return (await (await getDB()).get('exerciseCounts', id))?.count ?? 0
+}
+
+export async function getAllCounts(): Promise<Record<string, number>> {
+  const all = await (await getDB()).getAll('exerciseCounts')
+  return Object.fromEntries(all.map((c) => [c.id, c.count]))
+}
+
+// 复盘训练状态=完成 / 部分完成时,给当天计划里每个动作 +1(整体完成即全部 +1)。
+export async function incrementCounts(ids: string[]): Promise<void> {
+  if (ids.length === 0) return
+  const db = await getDB()
+  const tx = db.transaction('exerciseCounts', 'readwrite')
+  for (const id of ids) {
+    const current = (await tx.store.get(id))?.count ?? 0
+    await tx.store.put({ id, count: current + 1 })
+  }
+  await tx.done
 }

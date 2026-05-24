@@ -118,4 +118,19 @@ describe('storage layer', () => {
     await db.setHealthAck(true)
     expect(await db.getAnchorDate()).toBe(anchor)
   })
+
+  it('incrementCounts 累加;getCount 未知 id 返回 0', async () => {
+    const db = await import('./index')
+    expect(await db.getCount('goblet-squat')).toBe(0)
+    await db.incrementCounts(['goblet-squat', 'dead-bug'])
+    await db.incrementCounts(['goblet-squat'])
+    expect(await db.getCount('goblet-squat')).toBe(2)
+    expect(await db.getCount('dead-bug')).toBe(1)
+  })
+
+  it('getAllCounts 返回 id→次数映射', async () => {
+    const db = await import('./index')
+    await db.incrementCounts(['a', 'a', 'b'])
+    expect(await db.getAllCounts()).toEqual({ a: 2, b: 1 })
+  })
 })
