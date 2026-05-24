@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { todayKey, daysSinceAnchor, planDayIndex } from './date'
+import { todayKey, daysSinceAnchor, planDayIndex, addDays } from './date'
 
 describe('date utils', () => {
   it('todayKey 返回本地 YYYY-MM-DD', () => {
@@ -24,5 +24,12 @@ describe('date utils', () => {
 
   it('planDayIndex 在 today 早于 anchor 时不返回负数', () => {
     expect(planDayIndex('2026-05-20', '2026-05-19')).toBe(6)
+  })
+
+  it('addDays 加减天数并跨月', () => {
+    expect(addDays('2026-05-24', 1)).toBe('2026-05-25')
+    expect(addDays('2026-05-24', -1)).toBe('2026-05-23')
+    expect(addDays('2026-04-30', 1)).toBe('2026-05-01')
+    expect(addDays('2026-05-01', -1)).toBe('2026-04-30')
   })
 })

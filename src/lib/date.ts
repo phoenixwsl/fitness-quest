@@ -24,3 +24,10 @@ export function daysSinceAnchor(anchorKey: string, todayKeyStr: string): number 
 export function planDayIndex(anchorKey: string, todayKeyStr: string): number {
   return ((daysSinceAnchor(anchorKey, todayKeyStr) % 7) + 7) % 7
 }
+
+// 在日期 key 上加减天数,返回新的本地 YYYY-MM-DD。
+export function addDays(key: string, delta: number): string {
+  const d = parseKey(key)
+  d.setDate(d.getDate() + delta)
+  return todayKey(d)
+}

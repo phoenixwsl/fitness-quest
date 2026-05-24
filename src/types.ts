@@ -46,6 +46,13 @@ export interface Scenario {
   equipment: Equipment
 }
 
+// 动态引擎为某一天决定的训练类型 + 生成理由(透明可解释)。
+export interface DailyPlan {
+  date: string // 'YYYY-MM-DD'(主键)
+  type: PlanType
+  reason: string
+}
+
 export type TrainingStatus = 'done' | 'partial' | 'skipped' | 'restday'
 export type DietRating = 'good' | 'ok' | 'indulged'
 export type WaterStatus = 'enough' | 'notEnough'
