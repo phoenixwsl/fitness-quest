@@ -1,0 +1,2 @@
+# 提交前本地门禁:测试 + 构建必须通过(对齐 CLAUDE.md 与 CI)。
+npm run test && npm run build
