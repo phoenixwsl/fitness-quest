@@ -89,4 +89,19 @@ describe('storage layer', () => {
     await db.putMetric({ date: '2026-05-24', waist: 90 })
     expect(await db.getAllMetrics()).toHaveLength(2)
   })
+
+  it('putScenario / getScenario 按日期往返', async () => {
+    const db = await import('./index')
+    await db.putScenario({ date: '2026-05-24', timeOfDay: 'afternoon', equipment: 'equipped' })
+    expect(await db.getScenario('2026-05-24')).toEqual({
+      date: '2026-05-24',
+      timeOfDay: 'afternoon',
+      equipment: 'equipped',
+    })
+  })
+
+  it('getScenario 不存在时返回 undefined', async () => {
+    const db = await import('./index')
+    expect(await db.getScenario('2099-01-01')).toBeUndefined()
+  })
 })

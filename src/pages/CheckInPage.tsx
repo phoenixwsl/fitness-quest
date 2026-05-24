@@ -17,7 +17,7 @@ import {
   putPhoto,
 } from '../db'
 import { planDayIndex, todayKey } from '../lib/date'
-import { getPlanForDayIndex } from '../data/planTemplate'
+import { getPlanForType, getTypeForDayIndex } from '../data/planTemplate'
 import PhotoPicker from '../components/PhotoPicker'
 
 const TRAINING: { value: TrainingStatus; label: string }[] = [
@@ -199,7 +199,7 @@ export default function CheckInPage() {
   }
 
   if (view === 'result') {
-    const tomorrow = tomorrowIdx === null ? null : getPlanForDayIndex(tomorrowIdx)
+    const tomorrow = tomorrowIdx === null ? null : getPlanForType(getTypeForDayIndex(tomorrowIdx))
     return (
       <div className="flex flex-col gap-4 p-4 pb-24">
         <header className="pt-2">
@@ -217,7 +217,7 @@ export default function CheckInPage() {
             <section className="rounded-2xl bg-white p-4 shadow-sm">
               <h2 className="mb-1 text-base font-semibold text-slate-800">明日计划</h2>
               <p className="text-teal-700">{tomorrow.label}</p>
-              <p className="mt-1 text-sm text-slate-500">{tomorrow.morningTitle}</p>
+              <p className="mt-1 text-sm text-slate-500">{tomorrow.sessionTitle}</p>
               <p className="mt-2 text-xs text-slate-400">
                 这是静态一周计划的下一天;动态引擎将在 v1 接入。
               </p>

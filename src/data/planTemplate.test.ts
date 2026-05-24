@@ -1,15 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { WEEK_PLAN, getPlanForDayIndex } from './planTemplate'
-import type { PlanType } from '../types'
+import { TYPE_CYCLE, getTypeForDayIndex, getPlanForType, TIME_OF_DAY } from './planTemplate'
+import type { PlanType, TimeOfDay } from '../types'
 
-describe('static weekly plan template', () => {
-  it('有 7 天,dayIndex 依次为 0..6', () => {
-    expect(WEEK_PLAN).toHaveLength(7)
-    WEEK_PLAN.forEach((d, i) => expect(d.dayIndex).toBe(i))
-  })
+const ALL_TYPES: PlanType[] = ['strengthA', 'strengthB', 'mobility', 'recovery', 'rest']
+const STRENGTH: PlanType[] = ['strengthA', 'strengthB']
+const BANNED = ['swing', '摆动', '卷腹', '仰卧起坐', '硬拉', '过头推举', '大重量深蹲', '跑跳']
 
-  it('类型序列符合设计文档 §6.4', () => {
-    const seq: PlanType[] = [
+describe('TYPE_CYCLE / getTypeForDayIndex', () => {
+  it('7 天序列符合设计文档 §6.4', () => {
+    expect(TYPE_CYCLE).toEqual([
       'strengthA',
       'mobility',
       'strengthB',
@@ -17,54 +16,104 @@ describe('static weekly plan template', () => {
       'strengthA',
       'mobility',
       'rest',
-    ]
-    expect(WEEK_PLAN.map((d) => d.type)).toEqual(seq)
+    ])
   })
 
-  it('每天都有晚间体态与最低版本(永不归零)', () => {
-    for (const d of WEEK_PLAN) {
-      expect(d.eveningMobility.length).toBeGreaterThan(0)
-      expect(d.minimumVersion.trim().length).toBeGreaterThan(0)
-      expect(d.diet.trim().length).toBeGreaterThan(0)
-      expect(d.water.trim().length).toBeGreaterThan(0)
+  it('getTypeForDayIndex 对越界索引取模', () => {
+    expect(getTypeForDayIndex(0)).toBe('strengthA')
+    expect(getTypeForDayIndex(2)).toBe('strengthB')
+    expect(getTypeForDayIndex(6)).toBe('rest')
+    expect(getTypeForDayIndex(7)).toBe('strengthA')
+    expect(getTypeForDayIndex(-1)).toBe('rest')
+  })
+})
+
+describe('getPlanForType', () => {
+  it('每个类型都有晚间体态/最低版本/饮食/喝水(永不归零)', () => {
+    for (const t of ALL_TYPES) {
+      const p = getPlanForType(t)
+      expect(p.eveningMobility.length).toBeGreaterThan(0)
+      expect(p.minimumVersion.trim().length).toBeGreaterThan(0)
+      expect(p.diet.trim().length).toBeGreaterThan(0)
+      expect(p.water.trim().length).toBeGreaterThan(0)
     }
   })
 
-  it('力量日有主训练动作;休息日无早训动作', () => {
-    const byType = (t: PlanType) => WEEK_PLAN.filter((d) => d.type === t)
-    for (const d of [...byType('strengthA'), ...byType('strengthB')]) {
-      expect(d.main.length).toBeGreaterThan(0)
-    }
-    expect(byType('rest')[0].main).toHaveLength(0)
-  })
-
-  it('力量 A 含高脚杯深蹲,力量 B 含分腿蹲', () => {
-    const a = WEEK_PLAN.find((d) => d.type === 'strengthA')!
-    const b = WEEK_PLAN.find((d) => d.type === 'strengthB')!
-    expect(a.main.some((e) => e.name.includes('高脚杯深蹲'))).toBe(true)
-    expect(b.main.some((e) => e.name.includes('分腿蹲'))).toBe(true)
-  })
-
-  it('AS 安全:任何动作都不含被禁关键字', () => {
-    const banned = ['swing', '摆动', '卷腹', '仰卧起坐', '硬拉', '过头推举', '大重量深蹲', '跑跳']
-    const allNames = WEEK_PLAN.flatMap((d) => d.main.map((e) => `${e.name} ${e.prescription} ${e.note ?? ''}`))
-    for (const text of allNames) {
-      for (const bad of banned) {
-        expect(text).not.toContain(bad)
+  it('sessionTitle 时间中性(不含时间段前缀)', () => {
+    for (const t of ALL_TYPES) {
+      const title = getPlanForType(t).sessionTitle
+      for (const word of ['早上', '上午', '下午', '晚上']) {
+        expect(title).not.toContain(word)
       }
     }
   })
 
-  it('每个力量日都带「锐痛即停」安全提示', () => {
-    const strengthDays = WEEK_PLAN.filter((d) => d.type === 'strengthA' || d.type === 'strengthB')
-    for (const d of strengthDays) {
-      expect(d.safetyNote).toContain('锐痛')
+  it('力量日有 equipped 与 bodyweight 两套,各非空', () => {
+    for (const t of STRENGTH) {
+      const p = getPlanForType(t)
+      expect(p.main.equipped.length).toBeGreaterThan(0)
+      expect(p.main.bodyweight.length).toBeGreaterThan(0)
     }
   })
 
-  it('getPlanForDayIndex 对越界索引取模', () => {
-    expect(getPlanForDayIndex(7)).toBe(getPlanForDayIndex(0))
-    expect(getPlanForDayIndex(9)).toBe(getPlanForDayIndex(2))
-    expect(getPlanForDayIndex(-1)).toBe(getPlanForDayIndex(6))
+  it('力量 A:有器械含高脚杯深蹲;徒手含自重深蹲与俯卧 YTW', () => {
+    const a = getPlanForType('strengthA')
+    expect(a.main.equipped.some((e) => e.name.includes('高脚杯深蹲'))).toBe(true)
+    expect(a.main.bodyweight.some((e) => e.name.includes('自重深蹲'))).toBe(true)
+    expect(a.main.bodyweight.some((e) => e.name.includes('YTW'))).toBe(true)
+  })
+
+  it('力量 B:有器械含哑铃地面卧推;徒手含温和 superman', () => {
+    const b = getPlanForType('strengthB')
+    expect(b.main.equipped.some((e) => e.name.includes('地面卧推'))).toBe(true)
+    expect(b.main.bodyweight.some((e) => e.name.includes('superman'))).toBe(true)
+  })
+
+  it('活动度/恢复日 有无器械共用同一清单', () => {
+    for (const t of ['mobility', 'recovery'] as PlanType[]) {
+      const p = getPlanForType(t)
+      expect(p.main.equipped).toEqual(p.main.bodyweight)
+      expect(p.main.equipped.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('休息日无早训动作', () => {
+    const r = getPlanForType('rest')
+    expect(r.main.equipped).toHaveLength(0)
+    expect(r.main.bodyweight).toHaveLength(0)
+  })
+
+  it('力量日带「锐痛」安全提示', () => {
+    for (const t of STRENGTH) {
+      expect(getPlanForType(t).safetyNote).toContain('锐痛')
+    }
+  })
+
+  it('AS 安全:任何动作(两套)都不含被禁关键字', () => {
+    for (const t of ALL_TYPES) {
+      const p = getPlanForType(t)
+      const texts = [...p.main.equipped, ...p.main.bodyweight].map(
+        (e) => `${e.name} ${e.prescription} ${e.note ?? ''}`,
+      )
+      for (const text of texts) {
+        for (const bad of BANNED) {
+          expect(text).not.toContain(bad)
+        }
+      }
+    }
+  })
+})
+
+describe('TIME_OF_DAY', () => {
+  it('三个时间段齐全,各有 label 与 tip', () => {
+    for (const t of ['morning', 'afternoon', 'evening'] as TimeOfDay[]) {
+      expect(TIME_OF_DAY[t].label.length).toBeGreaterThan(0)
+      expect(TIME_OF_DAY[t].tip.length).toBeGreaterThan(0)
+      expect(Array.isArray(TIME_OF_DAY[t].warmupExtra)).toBe(true)
+    }
+  })
+
+  it('上午晨僵起步更慢:有额外热身', () => {
+    expect(TIME_OF_DAY.morning.warmupExtra.length).toBeGreaterThan(0)
   })
 })

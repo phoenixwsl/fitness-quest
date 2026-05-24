@@ -1,12 +1,17 @@
 import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import TodayPage from './TodayPage'
 import { todayKey } from '../lib/date'
+import type { Scenario } from '../types'
 
-vi.mock('../db', () => ({ getAnchorDate: vi.fn() }))
-import { getAnchorDate } from '../db'
+vi.mock('../db', () => ({
+  getAnchorDate: vi.fn(),
+  getScenario: vi.fn(),
+  putScenario: vi.fn().mockResolvedValue(undefined),
+}))
+import { getAnchorDate, getScenario, putScenario } from '../db'
 
-// 锚点设为「今天 - idx 天」,使 planDayIndex 落在指定 idx(0..6)。
+// 锚点 = 今天 - idx 天 → planDayIndex 落在 idx;idx0=力量A,idx6=休息。
 function anchorForIndex(idx: number): string {
   const d = new Date()
   d.setDate(d.getDate() - idx)
@@ -15,50 +20,71 @@ function anchorForIndex(idx: number): string {
 
 beforeEach(() => {
   ;(getAnchorDate as Mock).mockReset()
+  ;(getScenario as Mock).mockReset()
+  ;(putScenario as Mock).mockReset().mockResolvedValue(undefined)
 })
 
-describe('TodayPage', () => {
-  it('渲染今日日期', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
+function setup(idx: number, scenario: Scenario | undefined) {
+  ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(idx))
+  ;(getScenario as Mock).mockResolvedValue(scenario)
+}
+
+describe('TodayPage 场景流程', () => {
+  it('无场景时显示场景选择器', async () => {
+    setup(0, undefined)
     render(<TodayPage />)
-    expect(await screen.findByText(new RegExp(todayKey()))).toBeInTheDocument()
+    expect(await screen.findByText('选择场景')).toBeInTheDocument()
   })
 
-  it('力量 A 日:显示高脚杯深蹲与组数', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
+  it('选「下午 + 有器械」渲染力量A有器械清单并存场景', async () => {
+    setup(0, undefined)
+    render(<TodayPage />)
+    fireEvent.click(await screen.findByRole('button', { name: '开始训练' }))
+    expect(await screen.findByText('高脚杯深蹲')).toBeInTheDocument()
+    expect(screen.getByText(/下午 · 主训练/)).toBeInTheDocument()
+    expect(putScenario).toHaveBeenCalledWith({
+      date: todayKey(),
+      timeOfDay: 'afternoon',
+      equipment: 'equipped',
+    })
+  })
+
+  it('选「无器械」渲染徒手清单', async () => {
+    setup(0, undefined)
+    render(<TodayPage />)
+    fireEvent.click(await screen.findByRole('radio', { name: '无器械' }))
+    fireEvent.click(screen.getByRole('button', { name: '开始训练' }))
+    expect(await screen.findByText('自重深蹲')).toBeInTheDocument()
+    expect(screen.queryByText('高脚杯深蹲')).not.toBeInTheDocument()
+  })
+
+  it('上午场景显示晨僵提示', async () => {
+    setup(0, undefined)
+    render(<TodayPage />)
+    fireEvent.click(await screen.findByRole('radio', { name: '上午' }))
+    fireEvent.click(screen.getByRole('button', { name: '开始训练' }))
+    expect(await screen.findByText(/上午常有晨僵/)).toBeInTheDocument()
+  })
+
+  it('已有当天场景时直接渲染,且可重选场景', async () => {
+    setup(0, { date: todayKey(), timeOfDay: 'afternoon', equipment: 'equipped' })
     render(<TodayPage />)
     expect(await screen.findByText('高脚杯深蹲')).toBeInTheDocument()
-    expect(screen.getByText('3 × 10')).toBeInTheDocument()
+    expect(screen.queryByText('选择场景')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '重选场景' }))
+    expect(await screen.findByText('选择场景')).toBeInTheDocument()
   })
 
-  it('显示晚间体态放松区块', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
+  it('渲染晚间体态 / 饮食喝水 / 最低版本', async () => {
+    setup(0, { date: todayKey(), timeOfDay: 'afternoon', equipment: 'equipped' })
     render(<TodayPage />)
     expect(await screen.findByText('晚间体态放松')).toBeInTheDocument()
-    expect(screen.getByText(/靠墙天使/)).toBeInTheDocument()
+    expect(screen.getByText(/餐盘法/)).toBeInTheDocument()
+    expect(screen.getByText('最低版本')).toBeInTheDocument()
   })
 
-  it('显示饮食与喝水提示', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
-    render(<TodayPage />)
-    expect(await screen.findByText(/餐盘法/)).toBeInTheDocument()
-    expect(screen.getByText(/2–2.5L/)).toBeInTheDocument()
-  })
-
-  it('显示「最低版本」兜底', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
-    render(<TodayPage />)
-    expect(await screen.findByText('最低版本')).toBeInTheDocument()
-  })
-
-  it('力量日显示「锐痛即停」安全提示', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(0))
-    render(<TodayPage />)
-    expect(await screen.findByText(/锐痛即停/)).toBeInTheDocument()
-  })
-
-  it('休息日:显示休息且不渲染早训动作', async () => {
-    ;(getAnchorDate as Mock).mockResolvedValue(anchorForIndex(6))
+  it('休息日显示休息且无早训动作', async () => {
+    setup(6, { date: todayKey(), timeOfDay: 'evening', equipment: 'bodyweight' })
     render(<TodayPage />)
     expect(await screen.findByText(/今天休息/)).toBeInTheDocument()
     expect(screen.queryByText('高脚杯深蹲')).not.toBeInTheDocument()
