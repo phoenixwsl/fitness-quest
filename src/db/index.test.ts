@@ -133,4 +133,21 @@ describe('storage layer', () => {
     await db.incrementCounts(['a', 'a', 'b'])
     expect(await db.getAllCounts()).toEqual({ a: 2, b: 1 })
   })
+
+  it('putDailyPlan / getDailyPlan 按日期往返', async () => {
+    const db = await import('./index')
+    await db.putDailyPlan({ date: '2026-05-25', type: 'strengthB', reason: '轮换' })
+    expect(await db.getDailyPlan('2026-05-25')).toEqual({
+      date: '2026-05-25',
+      type: 'strengthB',
+      reason: '轮换',
+    })
+  })
+
+  it('getAllDailyPlans 返回全部', async () => {
+    const db = await import('./index')
+    await db.putDailyPlan({ date: '2026-05-24', type: 'strengthA', reason: 'a' })
+    await db.putDailyPlan({ date: '2026-05-25', type: 'mobility', reason: 'b' })
+    expect(await db.getAllDailyPlans()).toHaveLength(2)
+  })
 })

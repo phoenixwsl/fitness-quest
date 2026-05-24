@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { IDBFactory } from 'fake-indexeddb'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { todayKey } from '../lib/date'
+import { addDays, todayKey } from '../lib/date'
 
 // 全新库 + 重置模块,保证 db 单例与数据隔离。
 beforeEach(() => {
@@ -52,12 +52,15 @@ describe('CheckInPage', () => {
     expect(got?.isBackfill).toBe(false)
   })
 
-  it('提交后显示明日计划卡(静态下一天)', async () => {
+  it('提交后显示引擎生成的明日计划卡 + 理由', async () => {
     await renderPage()
-    submit()
-    // 新库锚点=今天 → 今日 idx0(力量A)→ 明日 idx1(活动度/体态)
+    submit() // 默认绿档、无红旗、无历史 → 引擎排力量 A
     expect(await screen.findByText('明日计划')).toBeInTheDocument()
-    expect(screen.getByText('活动度 / 体态 + 散步')).toBeInTheDocument()
+    expect(screen.getByText('力量 A')).toBeInTheDocument()
+    expect(screen.getByText(/为什么:/)).toBeInTheDocument()
+    // 明日 dailyPlan 已落库
+    const tmr = await (await db()).getDailyPlan(addDays(todayKey(), 1))
+    expect(tmr?.type).toBe('strengthA')
   })
 
   it('勾选红旗自检提交后提示休息 + 就医', async () => {
@@ -91,10 +94,11 @@ describe('CheckInPage', () => {
   })
 
   it('完成打卡后今日动作完成次数 +1', async () => {
+    // 今日类型来自 dailyPlan(today);预置为力量A,无场景 → 徒手版
+    await (await db()).putDailyPlan({ date: todayKey(), type: 'strengthA', reason: '测试' })
     await renderPage()
     submit() // 默认训练状态 = 完成
     await screen.findByText('明日计划')
-    // 今日 idx0 = 力量A,无场景 → 徒手版:bw-squat 等 +1
     expect(await (await db()).getCount('bw-squat')).toBe(1)
   })
 

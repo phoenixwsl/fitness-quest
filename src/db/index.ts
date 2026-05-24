@@ -1,5 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
-import type { CheckIn, Metric, Photo, Scenario } from '../types'
+import type { CheckIn, DailyPlan, Metric, Photo, Scenario } from '../types'
 import { todayKey } from '../lib/date'
 
 interface AppSettings {
@@ -19,10 +19,11 @@ interface FitnessDB extends DBSchema {
   metrics: { key: string; value: Metric }
   scenarios: { key: string; value: Scenario }
   exerciseCounts: { key: string; value: ExerciseCount }
+  dailyPlans: { key: string; value: DailyPlan }
 }
 
 const DB_NAME = 'fitness-quest'
-const DB_VERSION = 3
+const DB_VERSION = 4
 const SETTINGS_KEY = 'app'
 
 let dbPromise: Promise<IDBPDatabase<FitnessDB>> | undefined
@@ -38,6 +39,7 @@ function getDB(): Promise<IDBPDatabase<FitnessDB>> {
         if (!db.objectStoreNames.contains('metrics')) db.createObjectStore('metrics', { keyPath: 'date' })
         if (!db.objectStoreNames.contains('scenarios')) db.createObjectStore('scenarios', { keyPath: 'date' })
         if (!db.objectStoreNames.contains('exerciseCounts')) db.createObjectStore('exerciseCounts', { keyPath: 'id' })
+        if (!db.objectStoreNames.contains('dailyPlans')) db.createObjectStore('dailyPlans', { keyPath: 'date' })
       },
     })
   }
@@ -109,6 +111,19 @@ export async function getScenario(date: string): Promise<Scenario | undefined> {
 
 export async function putScenario(scenario: Scenario): Promise<void> {
   await (await getDB()).put('scenarios', scenario)
+}
+
+// 引擎为每天生成的训练类型 + 理由。
+export async function getDailyPlan(date: string): Promise<DailyPlan | undefined> {
+  return (await getDB()).get('dailyPlans', date)
+}
+
+export async function putDailyPlan(plan: DailyPlan): Promise<void> {
+  await (await getDB()).put('dailyPlans', plan)
+}
+
+export async function getAllDailyPlans(): Promise<DailyPlan[]> {
+  return (await getDB()).getAll('dailyPlans')
 }
 
 // 动作累计完成次数(驱动详细度衰减)。

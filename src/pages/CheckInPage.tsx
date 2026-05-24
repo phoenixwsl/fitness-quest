@@ -4,22 +4,27 @@ import type {
   CheckIn,
   DietRating,
   Energy,
+  PlanType,
   PoseTag,
   Stiffness,
   TrainingStatus,
   WaterStatus,
 } from '../types'
 import {
-  getAnchorDate,
+  getAllCheckIns,
+  getAllDailyPlans,
   getCheckIn,
+  getDailyPlan,
   getScenario,
   incrementCounts,
   putCheckIn,
+  putDailyPlan,
   putMetric,
   putPhoto,
 } from '../db'
-import { planDayIndex, todayKey } from '../lib/date'
-import { getPlanForType, getTypeForDayIndex } from '../data/planTemplate'
+import { addDays, todayKey } from '../lib/date'
+import { getPlanForType } from '../data/planTemplate'
+import { buildEngineInput, decideNextType } from '../lib/engine'
 import PhotoPicker from '../components/PhotoPicker'
 
 const TRAINING: { value: TrainingStatus; label: string }[] = [
@@ -105,7 +110,8 @@ function RadioRow<T extends string>({
 
 export default function CheckInPage() {
   const today = todayKey()
-  const [tomorrowIdx, setTomorrowIdx] = useState<number | null>(null)
+  const [tomorrowType, setTomorrowType] = useState<PlanType | null>(null)
+  const [tomorrowReason, setTomorrowReason] = useState('')
   const [loaded, setLoaded] = useState(false)
   const [view, setView] = useState<'form' | 'result'>('form')
   const [resultRedFlag, setResultRedFlag] = useState(false)
@@ -128,12 +134,15 @@ export default function CheckInPage() {
 
   useEffect(() => {
     let alive = true
-    Promise.all([getAnchorDate(), getCheckIn(today)]).then(([anchor, existing]) => {
+    Promise.all([getCheckIn(today), getDailyPlan(addDays(today, 1))]).then(([existing, tmr]) => {
       if (!alive) return
-      setTomorrowIdx(planDayIndex(anchor, today) + 1)
       if (existing) {
         setResultRedFlag(existing.redFlag)
         setStatusText('今日已完成复盘 ✅')
+        if (tmr) {
+          setTomorrowType(tmr.type)
+          setTomorrowReason(tmr.reason)
+        }
         setView('result')
       }
       setLoaded(true)
@@ -182,9 +191,9 @@ export default function CheckInPage() {
     await putCheckIn(checkIn)
 
     // 整体完成即全部 +1:完成 / 部分完成时,给今日计划(类型 × 场景器械)里每个动作累加完成次数。
+    // 今日类型来自引擎生成的当日计划;无则兜底体态 / 活动度。
     if (trainingStatus === 'done' || trainingStatus === 'partial') {
-      const anchor = await getAnchorDate()
-      const todayType = getTypeForDayIndex(planDayIndex(anchor, today))
+      const todayType = (await getDailyPlan(today))?.type ?? 'mobility'
       const equipment = (await getScenario(today))?.equipment ?? 'bodyweight'
       const ids = getPlanForType(todayType).main[equipment].map((e) => e.exerciseId)
       await incrementCounts(ids)
@@ -200,6 +209,13 @@ export default function CheckInPage() {
       })
     }
 
+    // 动态引擎:据今晚复盘 + 历史生成明日训练类型。
+    const input = buildEngineInput(await getAllCheckIns(), await getAllDailyPlans(), today)
+    const output = decideNextType(input)
+    await putDailyPlan({ date: addDays(today, 1), type: output.type, reason: output.reason })
+
+    setTomorrowType(output.type)
+    setTomorrowReason(output.reason)
     setResultRedFlag(redFlag)
     setStatusText('复盘已保存,明天见 ✅')
     setView('result')
@@ -210,7 +226,7 @@ export default function CheckInPage() {
   }
 
   if (view === 'result') {
-    const tomorrow = tomorrowIdx === null ? null : getPlanForType(getTypeForDayIndex(tomorrowIdx))
+    const tomorrow = tomorrowType ? getPlanForType(tomorrowType) : null
     return (
       <div className="flex flex-col gap-4 p-4 pb-24">
         <header className="pt-2">
@@ -220,7 +236,7 @@ export default function CheckInPage() {
           <section className="rounded-2xl border border-red-200 bg-red-50 p-4">
             <h2 className="mb-1 text-base font-semibold text-red-700">明日计划:休息</h2>
             <p className="text-sm text-red-700">
-              检测到红旗信号。明日请休息,不安排任何训练,并尽快就医 / 联系风湿科或康复科评估。
+              {tomorrowReason || '检测到红旗信号。明日请休息,不安排任何训练,并尽快就医。'}
             </p>
           </section>
         ) : (
@@ -229,9 +245,9 @@ export default function CheckInPage() {
               <h2 className="mb-1 text-base font-semibold text-slate-800">明日计划</h2>
               <p className="text-teal-700">{tomorrow.label}</p>
               <p className="mt-1 text-sm text-slate-500">{tomorrow.sessionTitle}</p>
-              <p className="mt-2 text-xs text-slate-400">
-                这是静态一周计划的下一天;动态引擎将在 v1 接入。
-              </p>
+              {tomorrowReason && (
+                <p className="mt-2 text-xs text-slate-400">为什么:{tomorrowReason}</p>
+              )}
             </section>
           )
         )}

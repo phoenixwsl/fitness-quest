@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { Equipment, PlanType, Scenario, TimeOfDay, TrainingTypePlan } from '../types'
-import { getAllCounts, getAnchorDate, getScenario, putScenario } from '../db'
-import { planDayIndex, todayKey } from '../lib/date'
-import {
-  BASE_WARMUP_LIST,
-  TIME_OF_DAY,
-  getPlanForType,
-  getTypeForDayIndex,
-} from '../data/planTemplate'
+import { getAllCounts, getDailyPlan, getScenario, putScenario } from '../db'
+import { todayKey } from '../lib/date'
+import { BASE_WARMUP_LIST, TIME_OF_DAY, getPlanForType } from '../data/planTemplate'
 import { getExercise } from '../data/exerciseLibrary'
 import ScenarioPicker from '../components/ScenarioPicker'
 import ExerciseRow from '../components/ExerciseRow'
@@ -47,16 +42,19 @@ export default function TodayPage() {
   const today = todayKey()
   const [type, setType] = useState<PlanType | null>(null)
   const [scenario, setScenario] = useState<Scenario | null>(null)
+  const [reason, setReason] = useState('')
   const [loaded, setLoaded] = useState(false)
   const [picking, setPicking] = useState(false)
   const [counts, setCounts] = useState<Record<string, number>>({})
 
   useEffect(() => {
     let alive = true
-    Promise.all([getAnchorDate(), getScenario(today), getAllCounts()]).then(
-      ([anchor, sc, cnts]) => {
+    Promise.all([getDailyPlan(today), getScenario(today), getAllCounts()]).then(
+      ([dp, sc, cnts]) => {
         if (!alive) return
-        setType(getTypeForDayIndex(planDayIndex(anchor, today)))
+        // 引擎生成的当日计划;无(首次 / 漏复盘)则兜底体态 / 活动度日。
+        setType(dp?.type ?? 'mobility')
+        setReason(dp?.reason ?? '暂无昨日复盘 → 今日默认体态 / 活动度日')
         if (sc) setScenario(sc)
         setCounts(cnts)
         setLoaded(true)
@@ -87,6 +85,7 @@ export default function TodayPage() {
         <header className="pt-2">
           <p className="text-sm text-slate-500">{today}</p>
           <h1 className="text-xl font-bold text-slate-900">今日 · 休息</h1>
+          <p className="mt-1 text-xs text-slate-400">为什么是今天:{reason}</p>
         </header>
         <Card title="休息">
           <p className="text-slate-600">今天休息,给身体恢复的时间。只做晚间体态放松 + 复盘即可。</p>
@@ -115,6 +114,7 @@ export default function TodayPage() {
       <header className="pt-2">
         <p className="text-sm text-slate-500">{today}</p>
         <h1 className="text-xl font-bold text-slate-900">今日 · {plan.label}</h1>
+        <p className="mt-1 text-xs text-slate-400">为什么是今天:{reason}</p>
         <div className="mt-1 flex items-center gap-3">
           <span className="text-sm text-slate-500">
             场景:{tod.label} · {scenario.equipment === 'equipped' ? '有器械' : '无器械'}
