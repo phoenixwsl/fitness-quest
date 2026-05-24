@@ -103,6 +103,8 @@ export default function SettingsPage({ onClose }: { onClose: () => void }) {
         <p className="mt-3 text-xs text-slate-400">{lastBackupText}</p>
         {status && <p className="mt-1 text-xs text-teal-700">{status}</p>}
       </section>
+
+      <p className="mt-auto pt-4 text-center text-xs text-slate-400">版本 v{__APP_VERSION__}</p>
     </div>
   )
 }

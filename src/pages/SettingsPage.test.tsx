@@ -25,6 +25,11 @@ describe('SettingsPage 数据备份', () => {
     expect(screen.getByRole('button', { name: '导入备份' })).toBeInTheDocument()
   })
 
+  it('显示应用版本号', async () => {
+    await renderSettings()
+    expect(screen.getByText(/版本 v\d+\.\d+\.\d+/)).toBeInTheDocument()
+  })
+
   it('点击导出后记录 lastBackupAt', async () => {
     await renderSettings()
     fireEvent.click(screen.getByRole('button', { name: '导出备份' }))

@@ -5,6 +5,7 @@ import TodayPage from './pages/TodayPage'
 import CheckInPage from './pages/CheckInPage'
 import ProgressPage from './pages/ProgressPage'
 import SettingsPage from './pages/SettingsPage'
+import UpdatePrompt from './components/UpdatePrompt'
 import { getHealthAck, setHealthAck } from './db'
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
         {tab === 'progress' && <ProgressPage />}
       </main>
       <BottomNav active={tab} onChange={setTab} />
+      <UpdatePrompt />
     </div>
   )
 }
