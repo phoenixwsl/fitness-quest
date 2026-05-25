@@ -1,9 +1,10 @@
-import type { Exercise } from '../types'
+import type { Exercise, ExerciseEn } from '../types'
+import enContent from './exerciseContent.en.json'
 
-// 动作库(v1)。文字详解,保守、符合设计文档 §2 安全约束。imageUrl 留空(v1 不放示范图)。
+// 动作库。中文文字详解,保守、符合设计文档 §2 安全约束;英文镜像由素材包并入(见文件末)。
 // 「拉」的徒手替代用俯卧后链(YTW / superman);所有内容避开脊柱大负荷、屈曲卷腹、高冲击、摆动。
 
-export const EXERCISE_LIBRARY: Exercise[] = [
+const BASE: Omit<Exercise, 'en'>[] = [
   {
     id: 'goblet-squat',
     name: '高脚杯深蹲',
@@ -320,6 +321,42 @@ export const EXERCISE_LIBRARY: Exercise[] = [
     alternative: '室内原地踏步,或缩短时间。',
   },
 ]
+
+interface EnEntry {
+  name_en: string
+  target_en: string
+  steps_en: string[]
+  cues_en: string[]
+  mistakes_en: string[]
+  asSafety_en: string
+  alternative_en: string
+  wgerImageCandidate: boolean
+}
+
+const EN_RAW = (enContent as { exercises: Record<string, EnEntry> }).exercises
+
+function toEn(e: EnEntry): ExerciseEn {
+  return {
+    name: e.name_en,
+    target: e.target_en,
+    steps: e.steps_en,
+    cues: e.cues_en,
+    mistakes: e.mistakes_en,
+    asSafety: e.asSafety_en,
+    alternative: e.alternative_en,
+  }
+}
+
+export const EXERCISE_LIBRARY: Exercise[] = BASE.map((e) => {
+  const en = EN_RAW[e.id]
+  if (!en) throw new Error(`缺少英文内容: ${e.id}`)
+  return { ...e, en: toEn(en) }
+})
+
+// wger 抓图阶段(Task 6)会用到:某动作是否被标记为可抓 wger 图。
+export function isWgerImageCandidate(id: string): boolean {
+  return EN_RAW[id]?.wgerImageCandidate === true
+}
 
 const BY_ID: Record<string, Exercise> = Object.fromEntries(
   EXERCISE_LIBRARY.map((e) => [e.id, e]),

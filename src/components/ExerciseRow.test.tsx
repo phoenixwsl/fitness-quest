@@ -12,6 +12,15 @@ const ex: Exercise = {
   mistakes: ['圆背塌腰'],
   asSafety: '中小重量,锐痛即停',
   alternative: '自重深蹲',
+  en: {
+    name: 'Goblet Squat',
+    target: 'Lower body + core',
+    steps: ['Hold the weight at the chest', 'Sit back and down', 'Stand up'],
+    cues: ['Whole-foot contact'],
+    mistakes: ['Rounding the back'],
+    asSafety: 'Light-to-moderate load; stop on sharp pain',
+    alternative: 'Bodyweight squat',
+  },
 }
 
 function renderRow(count: number) {

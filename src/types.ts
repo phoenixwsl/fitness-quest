@@ -13,7 +13,25 @@ export interface ExerciseItem {
   note?: string
 }
 
-// 动作库条目:详情 + AS 安全标注。v1 只用文字详解,不放示范图(imageUrl 留空)。
+// 动作内容英文镜像(中英并列展示用;内容来自素材包,不改写)。
+export interface ExerciseEn {
+  name: string
+  target: string
+  steps: string[]
+  cues: string[]
+  mistakes: string[]
+  asSafety: string
+  alternative: string
+}
+
+// wger 补充图片引用(仅安全筛选通过的动作才有;CC-BY-SA 3.0 须署名)。
+export interface WgerImageRef {
+  src: string // 已打包的本地资源 URL(运行时不联网)
+  author?: string // CC-BY-SA 署名作者(若 API 提供)
+  license: string // 固定 'CC-BY-SA 3.0'
+}
+
+// 动作库条目:详情 + AS 安全标注 + 简笔示意图(SVG)+ 中英双语。
 export interface Exercise {
   id: string
   name: string
@@ -23,6 +41,7 @@ export interface Exercise {
   mistakes: string[] // 常见错误
   asSafety: string // AS 安全提示
   alternative: string // 替代动作
+  en: ExerciseEn // 英文镜像
   imageUrl?: string
 }
 
