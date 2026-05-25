@@ -67,7 +67,18 @@ describe('ExerciseRow', () => {
         <ExerciseRow exercise={real} name={real.name} prescription="3×10" count={0} />
       </ul>,
     )
-    expect(screen.getByRole('img', { name: /高脚杯深蹲/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: '高脚杯深蹲 示意图' })).toBeInTheDocument()
+  })
+
+  it('有 wger 补充图的动作显示参考图 + CC-BY-SA 署名', () => {
+    const real = getExercise('goblet-squat')! // 高脚杯深蹲有经审查通过的 wger 图
+    render(
+      <ul>
+        <ExerciseRow exercise={real} name={real.name} prescription="3×10" count={0} />
+      </ul>,
+    )
+    expect(screen.getByRole('img', { name: '高脚杯深蹲 参考图' })).toBeInTheDocument()
+    expect(screen.getByText(/部分图片来自 wger/)).toBeInTheDocument()
   })
 
   it('展开后中英并列:同时出现中文与英文要点', () => {

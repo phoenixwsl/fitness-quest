@@ -30,9 +30,12 @@ for (const [path, url] of Object.entries(wgerModules)) {
   WGER_URL_BY_ID[basenameId(path)] = url
 }
 
-// 经 Task 6 轻量安全审查通过的 wger 图署名;键须与 wger/<id>.<ext> 的 id 对应。
-// 初始为空;加入安全图片时按 id 填入作者。
-const WGER_CREDITS: Record<string, { author?: string }> = {}
+// 经轻量安全审查通过的 wger 图署名;键须与 wger/<id>.<ext> 的 id 对应。
+// 仅纳入「动作一致 + 姿态保守 + 图像清晰」的图(11 个候选里仅这 2 个达标)。
+const WGER_CREDITS: Record<string, { author?: string }> = {
+  'goblet-squat': { author: 'philip / wger.de' },
+  'floor-press': { author: 'wger.de' },
+}
 
 export function getExerciseSvg(id: string): string | undefined {
   return SVG_BY_ID[id]
