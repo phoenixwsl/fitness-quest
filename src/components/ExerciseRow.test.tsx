@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ExerciseRow from './ExerciseRow'
 import type { Exercise } from '../types'
+import { getExercise } from '../data/exerciseLibrary'
 
 const ex: Exercise = {
   id: 'goblet-squat',
@@ -57,5 +58,37 @@ describe('ExerciseRow', () => {
     renderRow(5)
     expect(screen.getByText('高脚杯深蹲')).toBeInTheDocument()
     expect(screen.getByText('3 × 10')).toBeInTheDocument()
+  })
+
+  it('展开后渲染该动作的简笔示意图(alt 含动作名)', () => {
+    const real = getExercise('goblet-squat')!
+    render(
+      <ul>
+        <ExerciseRow exercise={real} name={real.name} prescription="3×10" count={0} />
+      </ul>,
+    )
+    expect(screen.getByRole('img', { name: /高脚杯深蹲/ })).toBeInTheDocument()
+  })
+
+  it('展开后中英并列:同时出现中文与英文要点', () => {
+    const real = getExercise('goblet-squat')!
+    render(
+      <ul>
+        <ExerciseRow exercise={real} name={real.name} prescription="3×10" count={0} />
+      </ul>,
+    )
+    expect(screen.getByText('Goblet Squat')).toBeInTheDocument()
+    expect(screen.getByText(/重心落在全脚掌/)).toBeInTheDocument()
+    expect(screen.getByText(/Weight on the whole foot/)).toBeInTheDocument()
+  })
+
+  it('无匹配示意图时优雅降级:不渲染 img', () => {
+    const fake: Exercise = { ...getExercise('goblet-squat')!, id: 'no-such-svg' }
+    render(
+      <ul>
+        <ExerciseRow exercise={fake} name="测试" prescription="1×1" count={0} />
+      </ul>,
+    )
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
   })
 })
