@@ -1,0 +1,13 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="胸部开门拉伸 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="160" y1="26" x2="160" y2="150" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="100" cy="48" r="12"/>
+    <path d="M101,60 L104,120"/>
+    <path d="M104,120 L92,172"/>
+    <path d="M104,120 L118,172"/>
+    <path d="M103,70 L134,80 L158,54"/>
+  </g>
+  <line x1="112" y1="92" x2="146" y2="92" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M154,92 l-13,-7 l0,14 z" fill="#0d9488"/>
+</svg>

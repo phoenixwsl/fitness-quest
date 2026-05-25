@@ -1,0 +1,15 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="鸟狗 示意图">
+  <line x1="24" y1="174" x2="216" y2="174" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="84" cy="108" r="11"/>
+    <line x1="96" y1="110" x2="150" y2="110"/>
+    <path d="M96,110 L96,174"/>
+    <path d="M150,110 L150,174"/>
+  </g>
+  <g fill="none" stroke="#0d9488" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M96,110 L44,98"/>
+    <path d="M150,110 L204,98"/>
+  </g>
+  <circle cx="96" cy="110" r="4.5" fill="#334155"/>
+  <circle cx="150" cy="110" r="4.5" fill="#334155"/>
+</svg>

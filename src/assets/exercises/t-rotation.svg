@@ -1,0 +1,13 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="胸椎旋转 示意图">
+  <line x1="32" y1="176" x2="208" y2="176" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="80" cy="114" r="11"/>
+    <line x1="92" y1="116" x2="158" y2="116"/>
+    <path d="M96,116 L96,176"/>
+    <path d="M158,116 L158,176"/>
+  </g>
+  <path d="M104,114 L132,58" fill="none" stroke="#0d9488" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M148,72 Q150,52 132,50" fill="none" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M132,50 l13,-3 l-6,12 z" fill="#0d9488"/>
+  <circle cx="104" cy="114" r="4.5" fill="#334155"/>
+</svg>

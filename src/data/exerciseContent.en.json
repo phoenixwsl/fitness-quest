@@ -1,0 +1,341 @@
+{
+  "_about": "PR5 素材:动作库中英双语内容包。21 个动作的英文名称与说明,供 Claude Code 在 v2 PR5 合并进 src/data/exerciseLibrary.ts(中文已在仓库内)。wgerImageCandidate = 我对'wger / 开源库是否可能有可用图片'的估计,供 Claude Code 抓图时参考。教练角色出品,内容保守、符合设计文档 §2 AS 安全约束。",
+  "exercises": {
+    "goblet-squat": {
+      "name_zh": "高脚杯深蹲",
+      "name_en": "Goblet Squat",
+      "target_en": "Lower body (quads / glutes) + core",
+      "steps_en": [
+        "Hold a dumbbell or kettlebell against your chest with both hands; feet slightly wider than shoulders, toes turned slightly out",
+        "Inhale and sit back and down by bending the hips and knees; knees track over the toes",
+        "Descend until the thighs are near parallel, or to a depth that feels comfortable, keeping the torso upright",
+        "Exhale and drive up through the whole foot to stand"
+      ],
+      "cues_en": ["Weight on the whole foot; don't let the knees cave in", "Keep the torso tall; don't round or arch the back"],
+      "mistakes_en": ["Rounding or arching the back while descending", "Knees collapsing inward"],
+      "asSafety_en": "Use light-to-moderate load with a neutral torso; avoid heavy axial loading of the spine. Stop on any sharp pain.",
+      "alternative_en": "Drop the weight for a bodyweight squat, or sit to a chair and stand back up (box squat) to reduce difficulty.",
+      "wgerImageCandidate": true
+    },
+    "bw-squat": {
+      "name_zh": "自重深蹲",
+      "name_en": "Bodyweight Squat",
+      "target_en": "Lower body (quads / glutes) + core",
+      "steps_en": [
+        "Feet slightly wider than shoulders; raise both arms forward for balance",
+        "Sit back and down by bending the hips and knees; knees track over the toes",
+        "Descend to a comfortable depth with a neutral torso",
+        "Drive up through the whole foot, squeezing the glutes at the top"
+      ],
+      "cues_en": ["Whole-foot contact; knees don't cave in", "Squeeze the glutes to stand; don't use the lower back"],
+      "mistakes_en": ["Knees caving inward", "Rounding or arching the lower back"],
+      "asSafety_en": "Bodyweight only, neutral torso. Stop on any sharp pain.",
+      "alternative_en": "Sit to a chair and stand back up (box squat) to reduce difficulty.",
+      "wgerImageCandidate": true
+    },
+    "db-row": {
+      "name_zh": "哑铃单臂支撑划船",
+      "name_en": "Single-Arm Supported Dumbbell Row",
+      "target_en": "Upper back / lats / posterior chain",
+      "steps_en": [
+        "Place one hand and one knee on a bench or stable surface; keep the back flat",
+        "Let the other hand hang naturally holding a dumbbell",
+        "Retract the shoulder blade first, then pull the dumbbell back and up toward your side, elbow close to the body",
+        "Lower under control; don't shrug"
+      ],
+      "cues_en": ["Flat back; don't rotate the torso", "Drive with the back, not by shrugging"],
+      "mistakes_en": ["Twisting the torso to cheat the weight up", "Rounding the back"],
+      "asSafety_en": "The supported position protects the lower back; keep sets and reps equal on both sides. Stop on any sharp pain.",
+      "alternative_en": "With no equipment, replace this 'pull' with the prone Y-T-W raise.",
+      "wgerImageCandidate": true
+    },
+    "ytw": {
+      "name_zh": "俯卧 YTW",
+      "name_en": "Prone Y-T-W Raise",
+      "target_en": "Upper back / posterior chain / rotator cuff (posture)",
+      "steps_en": [
+        "Lie face down, forehead resting lightly on the mat, neck relaxed",
+        "Move the arms through three shapes in turn — Y, T, W — thumbs pointing up",
+        "In each shape, retract the shoulder blades and lift the arms slightly off the floor",
+        "Move slowly and under control; no swinging"
+      ],
+      "cues_en": ["Drive from the upper back; don't shrug", "Keep the neck relaxed, eyes down"],
+      "mistakes_en": ["Over-extending the lower back to compensate", "Shrugging the shoulders"],
+      "asSafety_en": "Keep the range gentle; don't push through back pain. Stop on any sharp pain.",
+      "alternative_en": "Standing wall angel as a substitute.",
+      "wgerImageCandidate": false
+    },
+    "pushup": {
+      "name_zh": "俯卧撑(上斜 / 跪姿 / 标准)",
+      "name_en": "Push-Up (incline / kneeling / standard)",
+      "target_en": "Chest / shoulders / triceps + core",
+      "steps_en": [
+        "Pick a level by difficulty: hands on a wall, then incline (hands on a table edge), then kneeling, then standard",
+        "Hands slightly wider than shoulders; body in one straight line",
+        "Bend the elbows and lower to a comfortable range",
+        "Press back up to the start"
+      ],
+      "cues_en": ["Brace the core; don't let the hips sag", "Elbows about 45 degrees to the torso"],
+      "mistakes_en": ["Sagging the lower back / hips piking up", "Head jutting forward"],
+      "asSafety_en": "Progress from easy to hard step by step; keep the core stable, no sagging. Stop on any sharp pain.",
+      "alternative_en": "If strength is limited, start with the incline or kneeling version.",
+      "wgerImageCandidate": true
+    },
+    "glute-bridge": {
+      "name_zh": "臀桥",
+      "name_en": "Glute Bridge",
+      "target_en": "Glutes / posterior chain / core",
+      "steps_en": [
+        "Lie on your back, knees bent, feet hip-width on the floor",
+        "Squeeze the glutes and lift the hips until shoulder, hip, and knee form a straight line",
+        "Hold about 1 second at the top",
+        "Lower under control"
+      ],
+      "cues_en": ["Drive with the glutes, not the lower back", "Ribs down, core braced"],
+      "mistakes_en": ["Pushing up with the lower back (over-extension)", "Feet too far from the body"],
+      "asSafety_en": "Anti-extension focus; don't drive with the lower back. Stop on any sharp pain.",
+      "alternative_en": "Reduce the range to regress, or single-leg glute bridge to progress.",
+      "wgerImageCandidate": true
+    },
+    "dead-bug": {
+      "name_zh": "死虫",
+      "name_en": "Dead Bug",
+      "target_en": "Core (anti-extension)",
+      "steps_en": [
+        "Lie on your back, arms pointing to the ceiling, hips and knees bent to 90 degrees",
+        "Press the lower back flat into the floor",
+        "Slowly extend the opposite arm and leg toward the floor",
+        "Return, then switch sides"
+      ],
+      "cues_en": ["Keep the lower back flat on the floor throughout", "Move slowly and keep breathing"],
+      "mistakes_en": ["Lower back arching off the floor", "Holding the breath"],
+      "asSafety_en": "Keep the back flat, no spinal extension. Stop on any sharp pain.",
+      "alternative_en": "Move only the legs (not the arms) to reduce difficulty.",
+      "wgerImageCandidate": true
+    },
+    "split-squat": {
+      "name_zh": "分腿蹲",
+      "name_en": "Split Squat",
+      "target_en": "Lower body (single leg) / glutes / balance",
+      "steps_en": [
+        "Stand in a split stance, back foot up on the toes",
+        "Lower straight down, back knee toward the floor",
+        "Drive up through the front heel",
+        "Keep sets and reps equal on both sides"
+      ],
+      "cues_en": ["Keep the torso upright", "Front knee tracks over the toes"],
+      "mistakes_en": ["Leaning forward and rounding the back", "Wobbling / unstable balance"],
+      "asSafety_en": "Bodyweight or light-to-moderate load, equal on both sides (mind the scoliosis). Stop on any sharp pain.",
+      "alternative_en": "Hold a chair or wall for balance, or reduce the range.",
+      "wgerImageCandidate": true
+    },
+    "floor-press": {
+      "name_zh": "哑铃地面卧推",
+      "name_en": "Dumbbell Floor Press",
+      "target_en": "Chest / shoulders / triceps",
+      "steps_en": [
+        "Lie on the floor holding dumbbells, elbows bent, upper arms resting on the floor",
+        "Press up until the arms are straight",
+        "Lower under control until the elbows lightly touch the floor",
+        "Repeat"
+      ],
+      "cues_en": ["The floor limits shoulder over-extension — easier on the shoulders", "Keep the wrists neutral"],
+      "mistakes_en": ["Shrugging the shoulders", "Dropping the elbows hard"],
+      "asSafety_en": "The floor limits shoulder extension, safer for beginners and for AS. Stop on any sharp pain.",
+      "alternative_en": "With no equipment, replace this 'press' with the push-up.",
+      "wgerImageCandidate": true
+    },
+    "superman": {
+      "name_zh": "温和 superman",
+      "name_en": "Gentle Superman",
+      "target_en": "Posterior chain / spinal erectors / glutes (posture)",
+      "steps_en": [
+        "Lie face down, arms extended forward",
+        "Gently lift the arms, chest, and legs slightly off the floor",
+        "Hold 1 to 2 seconds",
+        "Lower slowly"
+      ],
+      "cues_en": ["Small, gentle range; neck neutral", "Glutes and back work together"],
+      "mistakes_en": ["Over-extending and cranking the lower back", "Jerking the body up"],
+      "asSafety_en": "Keep the range gentle; don't over-extend or push into pain. Stop on any sharp pain.",
+      "alternative_en": "Switch to the prone Y-T-W raise or bird dog.",
+      "wgerImageCandidate": true
+    },
+    "bird-dog": {
+      "name_zh": "鸟狗",
+      "name_en": "Bird Dog",
+      "target_en": "Core (anti-rotation) / posterior chain",
+      "steps_en": [
+        "On all fours, back flat",
+        "Extend the opposite arm and leg until parallel with the torso",
+        "Hold 1 to 2 seconds, keeping the pelvis stable",
+        "Return, then switch sides"
+      ],
+      "cues_en": ["Pelvis doesn't rotate or tilt", "Neck and spine stay neutral"],
+      "mistakes_en": ["Sagging the lower back", "Pelvis tilting"],
+      "asSafety_en": "Anti-rotation, slow and controlled, spine neutral. Stop on any sharp pain.",
+      "alternative_en": "Extend only the leg or only the arm to reduce difficulty.",
+      "wgerImageCandidate": true
+    },
+    "side-plank": {
+      "name_zh": "侧桥",
+      "name_en": "Side Plank",
+      "target_en": "Lateral core / hips",
+      "steps_en": [
+        "Lie on your side, forearm on the floor, elbow under the shoulder",
+        "Lift the hips so the body forms one straight line",
+        "Hold for the set time",
+        "Equal on both sides"
+      ],
+      "cues_en": ["Body in one straight line", "Hips don't sag"],
+      "mistakes_en": ["Hips dropping", "Shoulder shrugging up"],
+      "asSafety_en": "Keep sets and reps equal on both sides; mind the scoliosis symmetry. Stop on any sharp pain.",
+      "alternative_en": "Bent-knee side plank (knees down) to reduce difficulty.",
+      "wgerImageCandidate": true
+    },
+    "cat-cow": {
+      "name_zh": "温和猫牛",
+      "name_en": "Cat-Cow (gentle)",
+      "target_en": "Spinal mobility",
+      "steps_en": [
+        "On all fours",
+        "Inhale and gently drop the belly, lift the head (cow)",
+        "Exhale and gently round the back, tuck the head (cat)",
+        "Alternate slowly within a comfortable range"
+      ],
+      "cues_en": ["Sync with the breath", "Gentle range; don't go to the painful end"],
+      "mistakes_en": ["Too large a range, pushing into pain", "Holding the breath"],
+      "asSafety_en": "Gentle mobility work; don't go to the painful end. Stop on any sharp pain.",
+      "alternative_en": "Do gentle spinal flexion and extension seated or standing.",
+      "wgerImageCandidate": false
+    },
+    "t-rotation": {
+      "name_zh": "胸椎旋转",
+      "name_en": "Thoracic Rotation",
+      "target_en": "Thoracic rotation mobility",
+      "steps_en": [
+        "On all fours, or lying on your side",
+        "Place one hand behind the head or reach it upward",
+        "Rotate the upper back open, eyes following the hand",
+        "Return slowly; equal on both sides"
+      ],
+      "cues_en": ["Rotation comes from the thoracic spine, not the lower back", "Keep the pelvis stable"],
+      "mistakes_en": ["Compensating with the lower back", "Moving too fast"],
+      "asSafety_en": "Rotation from the thoracic spine, pelvis stable, equal on both sides. Stop on any sharp pain.",
+      "alternative_en": "Do thoracic rotation seated.",
+      "wgerImageCandidate": false
+    },
+    "hip-flexor-stretch": {
+      "name_zh": "髋屈肌拉伸",
+      "name_en": "Hip Flexor Stretch",
+      "target_en": "Hip flexors (counters anterior pelvic tilt)",
+      "steps_en": [
+        "Half-kneeling, push the hip of the back leg forward",
+        "Squeeze the glute and find a posterior pelvic tilt",
+        "Hold about 30 seconds",
+        "Equal on both sides"
+      ],
+      "cues_en": ["Posterior pelvic tilt; don't arch and push the belly forward", "Feel the stretch in the front of the hip"],
+      "mistakes_en": ["Arching the back and pushing forward", "Holding the breath"],
+      "asSafety_en": "Gentle static stretch, not into sharp pain. Stop on any sharp pain.",
+      "alternative_en": "Gentle standing lunge stretch.",
+      "wgerImageCandidate": false
+    },
+    "hamstring-stretch": {
+      "name_zh": "腘绳肌拉伸",
+      "name_en": "Hamstring Stretch",
+      "target_en": "Back of the thigh",
+      "steps_en": [
+        "Lying on your back or seated",
+        "Extend one leg and gently feel the stretch in the back of the thigh",
+        "Hinge from the hip as much as possible, keeping the spine neutral",
+        "Hold about 30 seconds; equal on both sides"
+      ],
+      "cues_en": ["Keep the spine as neutral as possible", "Gentle, no bouncing"],
+      "mistakes_en": ["Yanking or bouncing", "Rounding the back to force a reach for the toes"],
+      "asSafety_en": "Avoid loading the spine in deep flexion; use a gentle static stretch. Stop on any sharp pain.",
+      "alternative_en": "Lying down, loop a towel around the foot to stretch with less forward bending.",
+      "wgerImageCandidate": false
+    },
+    "chest-opener": {
+      "name_zh": "胸部开门拉伸",
+      "name_en": "Doorway Chest Stretch",
+      "target_en": "Pecs / front of the shoulder (counters rounded shoulders)",
+      "steps_en": [
+        "Stand beside a doorway or wall corner, forearm against the frame",
+        "Gently lean the body forward, opening up the chest",
+        "Hold about 30 seconds",
+        "Equal on both sides"
+      ],
+      "cues_en": ["Feel the stretch across the front of the chest", "Don't shrug"],
+      "mistakes_en": ["Too large a range, stretching into shoulder pain", "Arching the lower back"],
+      "asSafety_en": "Gentle stretch to counter a rounded posture; not into sharp pain. Stop on any sharp pain.",
+      "alternative_en": "Lie on a foam roller for a thoracic extension stretch.",
+      "wgerImageCandidate": false
+    },
+    "pelvic-clock": {
+      "name_zh": "骨盆时钟",
+      "name_en": "Pelvic Clock",
+      "target_en": "Awareness and mobility of the pelvis / lower back",
+      "steps_en": [
+        "Lie on your back, knees bent",
+        "Imagine the pelvis is a clock; gently move it forward and back (12 to 6 o'clock)",
+        "Then gently side to side (3 to 9 o'clock)",
+        "Slowly trace small circles"
+      ],
+      "cues_en": ["Small, slow, with awareness", "Relax the breathing"],
+      "mistakes_en": ["Too large a range", "Using too much force"],
+      "asSafety_en": "Small, gentle mobility work. Stop on any sharp pain.",
+      "alternative_en": "Do only the forward-and-back gentle pelvic tilt.",
+      "wgerImageCandidate": false
+    },
+    "gentle-extension": {
+      "name_zh": "温和后伸(眼镜蛇 / 婴儿式交替)",
+      "name_en": "Gentle Spinal Extension (Cobra / Child's Pose)",
+      "target_en": "Spinal extension mobility (counters forward-flexed stiffening)",
+      "steps_en": [
+        "Lie face down, hands on the floor, gently lift the upper body to a comfortable range (cobra)",
+        "Hold a few seconds",
+        "Return to lying down, or move into child's pose to relax",
+        "Alternate gently"
+      ],
+      "cues_en": ["Gentle range; neck neutral", "Don't go to the painful end"],
+      "mistakes_en": ["Forcefully cranking into extension", "Over-tilting the head back"],
+      "asSafety_en": "Extension is a key direction for AS, but keep it gentle and pain-free; if night pain or sharp pain appears, stop and see a doctor.",
+      "alternative_en": "Standing, hands on the lower back, do a smaller-range gentle extension.",
+      "wgerImageCandidate": false
+    },
+    "breathing": {
+      "name_zh": "扩胸深呼吸",
+      "name_en": "Chest-Expansion Breathing",
+      "target_en": "Rib-cage expansion / breathing (AS-friendly)",
+      "steps_en": [
+        "Seated or lying down, place both hands on the sides of the ribs",
+        "Inhale deeply through the nose, feeling the rib cage expand to the sides",
+        "Exhale slowly",
+        "Repeat"
+      ],
+      "cues_en": ["Breathe into the rib cage, not by shrugging", "Relaxed rhythm"],
+      "mistakes_en": ["Shallow, shrugging breaths", "Over-breathing to the point of dizziness"],
+      "asSafety_en": "Gentle breathing work; helps rib-cage mobility for AS. Stop if uncomfortable.",
+      "alternative_en": "Lie with knees bent and do belly / rib breathing.",
+      "wgerImageCandidate": false
+    },
+    "walk": {
+      "name_zh": "快走 / 散步",
+      "name_en": "Brisk Walking",
+      "target_en": "Low-impact cardio / whole body",
+      "steps_en": [
+        "Choose flat ground",
+        "Head up, chin tucked, arms swinging naturally",
+        "Pace so you can still talk normally",
+        "Continue for the set time"
+      ],
+      "cues_en": ["Tall posture, no slouching", "Land softly"],
+      "mistakes_en": ["Walking fast with the head down and chest collapsed", "Pace too hard to catch your breath"],
+      "asSafety_en": "Low-impact cardio; avoid high-impact running and jumping. Stop on discomfort or sharp pain.",
+      "alternative_en": "March in place indoors, or shorten the time.",
+      "wgerImageCandidate": false
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="俯卧 YTW 示意图">
+  <ellipse cx="120" cy="180" rx="88" ry="9" fill="#e2e8f0"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="120" cy="46" r="12"/>
+    <path d="M120,58 L120,150"/>
+    <path d="M120,150 L104,182"/>
+    <path d="M120,150 L136,182"/>
+    <path d="M120,72 L86,40"/>
+    <path d="M120,72 L154,40"/>
+  </g>
+  <path d="M78,34 l-2,-14 l12,7 z" fill="#0d9488"/>
+  <path d="M162,34 l2,-14 l-12,7 z" fill="#0d9488"/>
+  <text x="120" y="120" font-family="sans-serif" font-size="20" fill="#0d9488" text-anchor="middle" font-weight="700">Y</text>
+</svg>

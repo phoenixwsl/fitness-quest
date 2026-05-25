@@ -1,0 +1,12 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="腘绳肌拉伸 示意图">
+  <line x1="32" y1="172" x2="212" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="54" cy="158" r="11"/>
+    <line x1="68" y1="162" x2="128" y2="162"/>
+    <path d="M128,162 L152,74"/>
+    <path d="M128,162 L196,168"/>
+    <path d="M84,162 L138,108"/>
+  </g>
+  <path d="M150,118 Q132,120 124,138" fill="none" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M124,138 l-2,-14 l12,7 z" fill="#0d9488"/>
+</svg>

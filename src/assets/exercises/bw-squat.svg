@@ -1,0 +1,11 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="自重深蹲 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="106" cy="44" r="12"/>
+    <path d="M98,172 L144,124 L96,118 L103,58"/>
+    <line x1="82" y1="172" x2="114" y2="172"/>
+    <path d="M103,64 L152,76"/>
+  </g>
+  <line x1="184" y1="140" x2="184" y2="102" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M184,94 l-7,13 l14,0 z" fill="#0d9488"/>
+</svg>

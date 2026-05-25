@@ -1,0 +1,10 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="臀桥 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="58" cy="158" r="12"/>
+    <path d="M72,170 L132,104 L182,74"/>
+    <path d="M182,74 L178,172"/>
+  </g>
+  <line x1="118" y1="128" x2="118" y2="86" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M118,78 l-7,13 l14,0 z" fill="#0d9488"/>
+</svg>

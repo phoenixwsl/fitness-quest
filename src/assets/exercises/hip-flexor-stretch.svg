@@ -1,0 +1,12 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="髋屈肌拉伸 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="128" cy="48" r="12"/>
+    <path d="M128,60 L122,118"/>
+    <path d="M122,118 L150,144 L150,172"/>
+    <path d="M122,118 L88,158 L64,172"/>
+    <path d="M126,68 L140,112"/>
+  </g>
+  <line x1="120" y1="140" x2="158" y2="140" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M166,140 l-13,-7 l0,14 z" fill="#0d9488"/>
+</svg>

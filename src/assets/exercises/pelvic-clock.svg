@@ -1,0 +1,11 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="骨盆时钟 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="52" cy="158" r="11"/>
+    <line x1="66" y1="162" x2="120" y2="162"/>
+    <path d="M120,162 L146,122 L178,162"/>
+  </g>
+  <circle cx="120" cy="150" r="17" fill="none" stroke="#0d9488" stroke-width="3.5"/>
+  <path d="M120,133 l7,8 l-12,3 z" fill="#0d9488"/>
+  <circle cx="120" cy="150" r="3" fill="#0d9488"/>
+</svg>

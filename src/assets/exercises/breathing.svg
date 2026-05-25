@@ -1,0 +1,14 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="扩胸深呼吸 示意图">
+  <line x1="32" y1="170" x2="208" y2="170" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="120" cy="50" r="12"/>
+    <path d="M120,62 L120,150"/>
+    <path d="M120,150 L86,166 L150,166"/>
+    <path d="M120,78 L98,104 L112,118"/>
+    <path d="M120,78 L142,104 L128,118"/>
+  </g>
+  <line x1="92" y1="100" x2="66" y2="100" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M58,100 l13,-7 l0,14 z" fill="#0d9488"/>
+  <line x1="148" y1="100" x2="174" y2="100" stroke="#0d9488" stroke-width="4" stroke-linecap="round"/>
+  <path d="M182,100 l-13,-7 l0,14 z" fill="#0d9488"/>
+</svg>

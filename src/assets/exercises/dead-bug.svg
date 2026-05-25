@@ -1,0 +1,15 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="死虫 示意图">
+  <line x1="32" y1="172" x2="208" y2="172" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="74" cy="150" r="11"/>
+    <line x1="88" y1="154" x2="150" y2="154"/>
+    <path d="M96,154 L96,84"/>
+    <path d="M150,154 L150,92 L194,92"/>
+  </g>
+  <g fill="none" stroke="#0d9488" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M96,154 L56,166"/>
+    <path d="M150,154 L206,164"/>
+  </g>
+  <circle cx="96" cy="154" r="4.5" fill="#334155"/>
+  <circle cx="150" cy="154" r="4.5" fill="#334155"/>
+</svg>

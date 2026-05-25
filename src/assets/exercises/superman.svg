@@ -1,0 +1,10 @@
+<svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="温和 superman 示意图">
+  <line x1="32" y1="174" x2="208" y2="174" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#334155" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="78" cy="120" r="11"/>
+    <path d="M89,124 Q120,116 152,128 Q176,138 198,130"/>
+    <path d="M89,124 Q66,128 44,138"/>
+  </g>
+  <path d="M44,150 l-3,-14 l13,6 z" fill="#0d9488"/>
+  <path d="M198,150 l3,-14 l-13,6 z" fill="#0d9488"/>
+</svg>
